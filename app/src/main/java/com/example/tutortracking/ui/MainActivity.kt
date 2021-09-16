@@ -1,7 +1,8 @@
-package com.example.tutortracking
+package com.example.tutortracking.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.tutortracking.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/fragments_background"
+    tools:context=".ui.ProfileFragment">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/register_image_view"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="16dp"
+        android:clickable="false"
+        android:background="@drawable/image_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/register_modules_et"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/edit_text_background"
+        android:ems="10"
+        android:enabled="false"
+        android:hint="Tutor's Modules (separate by commas)"
+        android:inputType="textCapWords"
+        android:paddingLeft="8dp"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/register_email_et" />
+
+    <EditText
+        android:id="@+id/register_name_et"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/edit_text_background"
+        android:ems="10"
+        android:enabled="false"
+        android:hint="Tutor's Name"
+        android:inputType="textCapWords"
+        android:paddingLeft="8dp"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/register_image_view" />
+
+    <EditText
+        android:id="@+id/register_email_et"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/edit_text_background"
+        android:ems="10"
+        android:enabled="false"
+        android:hint="Tutor's Email"
+        android:inputType="textEmailAddress"
+        android:paddingLeft="8dp"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/register_name_et" />
+
+    <TextView
+        android:id="@+id/profile_student_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="@+id/register_modules_et"
+        app:layout_constraintTop_toBottomOf="@+id/register_modules_et"
+        tools:text="students count: 20" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/register_register_chip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/small_items_color"
+        android:text="Update"
+        android:textColor="@color/my_greish"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="@+id/register_modules_et"
+        app:layout_constraintTop_toBottomOf="@+id/profile_student_count" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
