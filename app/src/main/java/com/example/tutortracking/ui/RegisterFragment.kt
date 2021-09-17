@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.example.tutortracking.databinding.FragmentRegisterBinding
+import dagger.hilt.android.AndroidEntryPoint
 
 
+@AndroidEntryPoint
 class RegisterFragment : Fragment() {
     private var _binding: FragmentRegisterBinding?=null
     private val binding

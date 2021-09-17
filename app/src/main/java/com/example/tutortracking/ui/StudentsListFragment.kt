@@ -7,8 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.tutortracking.R
 import com.example.tutortracking.databinding.FragmentStudentsListBinding
+import dagger.hilt.android.AndroidEntryPoint
 
 
+@AndroidEntryPoint
 class StudentsListFragment : Fragment() {
     private var _binding: FragmentStudentsListBinding? =null
     private val binding

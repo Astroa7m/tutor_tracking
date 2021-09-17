@@ -4,8 +4,9 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.example.tutortracking.databinding.FragmentAddStudentBinding
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class AddStudentFragment : Fragment() {
     private var _binding: FragmentAddStudentBinding? =null
     private val binding

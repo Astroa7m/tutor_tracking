@@ -10,4 +10,6 @@
     <color name="small_items_color">#BDD3DD</color>
     <color name="my_greish">#535353</color>
     <color name="fragments_background">#93BFD3</color>
+    <color name="not_synced">#FF3737</color>
+    <color name="synced">#6FF451</color>
 </resources>
