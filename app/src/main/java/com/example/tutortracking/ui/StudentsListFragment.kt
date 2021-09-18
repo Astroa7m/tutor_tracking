@@ -22,21 +22,22 @@ import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class StudentsListFragment : Fragment() {
+class StudentsListFragment : Fragment(R.layout.fragment_students_list) {
     private var _binding: FragmentStudentsListBinding? =null
-    private val binding
+    private val binding:FragmentStudentsListBinding?
         get() = _binding!!
     @Inject
     lateinit var sessionManager: SessionManager
     private val viewModel : TutorViewModel by activityViewModels()
 
+    override fun onStart() {
+        super.onStart()
+        validateUser()
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentStudentsListBinding.bind(view)
-
-        validateUser()
-
     }
 
     private fun validateUser() = lifecycleScope.launch {
@@ -45,7 +46,6 @@ class StudentsListFragment : Fragment() {
                 navigateToLoginScreen()
         }
     }
-
 
     private fun navigateToLoginScreen() {
         findNavController().navigate(StudentsListFragmentDirections.actionStudentsListFragmentToLoginFragment())

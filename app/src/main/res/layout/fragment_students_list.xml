@@ -4,10 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.StudentsListFragment"
-    android:background="#3293BFD3">
+    android:background="#3293BFD3"
+    tools:context=".ui.StudentsListFragment">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -19,9 +20,8 @@
             android:id="@+id/main_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:listitem="@layout/student_list_items"
             android:clipToPadding="false"
-            android:padding="8dp" />
+            android:padding="8dp"
+            tools:listitem="@layout/student_list_items" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

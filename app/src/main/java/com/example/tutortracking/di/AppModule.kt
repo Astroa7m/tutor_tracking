@@ -1,12 +1,10 @@
 package com.example.tutortracking.di
 
 import android.content.Context
-import androidx.room.Dao
 import androidx.room.Room
 import com.example.tutortracking.data.localdata.StudentDao
 import com.example.tutortracking.data.localdata.StudentDatabase
-import com.example.tutortracking.data.remotedata.models.Student
-import com.example.tutortracking.data.remotedata.models.TutorApi
+import com.example.tutortracking.data.remotedata.TutorApi
 import com.example.tutortracking.data.repository.TutorRepository
 import com.example.tutortracking.data.repository.TutorRepositoryImpl
 import com.example.tutortracking.util.Constants.BASE_URL

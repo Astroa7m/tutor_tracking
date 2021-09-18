@@ -3,11 +3,12 @@ package com.example.tutortracking.ui
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import com.example.tutortracking.R
 import com.example.tutortracking.databinding.FragmentAddStudentBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class AddStudentFragment : Fragment() {
+class AddStudentFragment : Fragment(R.layout.fragment_add_student) {
     private var _binding: FragmentAddStudentBinding? =null
     private val binding
         get() = _binding!!
