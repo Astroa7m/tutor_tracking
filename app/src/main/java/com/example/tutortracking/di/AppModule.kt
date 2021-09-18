@@ -1,10 +1,14 @@
 package com.example.tutortracking.di
 
 import android.content.Context
+import androidx.room.Dao
 import androidx.room.Room
+import com.example.tutortracking.data.localdata.StudentDao
 import com.example.tutortracking.data.localdata.StudentDatabase
 import com.example.tutortracking.data.remotedata.models.Student
 import com.example.tutortracking.data.remotedata.models.TutorApi
+import com.example.tutortracking.data.repository.TutorRepository
+import com.example.tutortracking.data.repository.TutorRepositoryImpl
 import com.example.tutortracking.util.Constants.BASE_URL
 import com.example.tutortracking.util.SessionManager
 import dagger.Module
@@ -57,4 +61,15 @@ object AppModule {
     @Singleton
     @Provides
     fun provideSessionManager(@ApplicationContext context: Context) = SessionManager(context)
+
+    @Singleton
+    @Provides
+    fun provideRepository(
+        studentDao: StudentDao,
+        tutorApi: TutorApi,
+        sessionManager: SessionManager
+    ) : TutorRepository = TutorRepositoryImpl(
+        studentDao,
+        tutorApi,
+        sessionManager)
 }

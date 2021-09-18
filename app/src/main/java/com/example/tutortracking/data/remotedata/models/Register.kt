@@ -1,6 +1,6 @@
 package com.example.tutortracking.data.remotedata.models
 
-data class Update(
+data class Register (
     val email: String?=null,
     val password: String?=null,
     val name: String?=null,

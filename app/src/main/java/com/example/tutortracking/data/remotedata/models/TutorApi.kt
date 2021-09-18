@@ -16,7 +16,7 @@ interface TutorApi {
     @Headers("Content-Type: application/json")
     @POST(REGISTER_TUTOR)
     fun registerTutor(
-        @Body tutor : Tutor
+        @Body tutor : Register
     ) : UserResponse
 
     @Headers("Content-Type: application/json")

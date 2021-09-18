@@ -26,7 +26,7 @@ class SessionManager(val context: Context) {
             pref[tutorEmailKey] = tutorEmail
         }
     }
-    suspend fun getTutorToken() : String? {
+    suspend fun getTutorToken(): String? {
         val jwtTokenKey = stringPreferencesKey(TOKEN_KEY)
         val preference = context.myDatastore.data.first()
         return preference[jwtTokenKey]
