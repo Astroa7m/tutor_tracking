@@ -1,6 +1,7 @@
 package com.example.tutortracking.ui
 
 import android.app.Activity.RESULT_OK
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -15,14 +16,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.tutortracking.R
 import com.example.tutortracking.databinding.FragmentRegisterBinding
-import com.example.tutortracking.util.Result
-import com.example.tutortracking.util.decode
-import com.example.tutortracking.util.getImageBytes
-import com.example.tutortracking.util.getImageString
+import com.example.tutortracking.util.*
 import com.example.tutortracking.viewmodels.TutorViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
@@ -33,15 +32,21 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
     private val viewModel : TutorViewModel by activityViewModels()
     private lateinit var launcher: ActivityResultLauncher<Intent>
     private var imageUri: Uri? = null
-    
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        setUpLauncher()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentRegisterBinding.bind(view)
 
         subscribeToTutorEvents()
-        setUpLauncher()
 
-        binding.registerRegisterChip.setOnClickListener{sendUserInput()}
+        binding.registerRegisterChip.setOnClickListener{
+            sendUserInput()
+        }
 
         binding.registerImageView.setOnClickListener {
             Intent(Intent.ACTION_PICK).also {
@@ -53,7 +58,7 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
     }
 
     private fun subscribeToTutorEvents() = lifecycleScope.launch {
-        viewModel.tutorState.collect { response->
+        viewModel.tutorRegisterState.collect { response->
             when(response){
                 is Result.Loading-> showProgressBar()
                 is Result.Error ->{
@@ -81,9 +86,7 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
         launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
             if(it.resultCode==RESULT_OK){
                imageUri = it.data?.data
-                val byteArrImageString = getImageString(getImageBytes(imageUri, requireContext()))
-                val getImageBitmap = decode(byteArrImageString)
-                binding.registerImageView.setImageBitmap(getImageBitmap)
+                binding.registerImageView.setImageURI(imageUri)
                 binding.registerOnImageText.isVisible = false
             }else{
                 Toast.makeText(requireContext(), "no image was selected", Toast.LENGTH_SHORT).show()
@@ -91,7 +94,7 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
         }
     }
 
-    private fun sendUserInput()  {
+    private fun sendUserInput() = lifecycleScope.launch {
         val email = binding.registerEmailEt.text.toString()
         val name = binding.registerNameEt.text.toString()
         val password = binding.registerPasswordEt.text.toString()

@@ -17,7 +17,8 @@ interface TutorRepository {
     fun getAllStudents() : Flow<List<LocalStudent>>
     suspend fun updateStudent(student: LocalStudent) : Result<UserResponse>
     suspend fun deleteStudent(student: LocalStudent) : Result<UserResponse>
-    suspend fun logout() : Result<String>
+    suspend fun logout() : Result<UserResponse>
     suspend fun getAllStudentsFromServer() : Result<UserResponse>
     suspend fun validateUser() : String?
+    fun getCurrentUser() : Flow<List<Tutor>>
 }

@@ -6,11 +6,16 @@ import com.example.tutortracking.data.localdata.models.LocalStudent
 import com.example.tutortracking.data.remotedata.TutorApi
 import com.example.tutortracking.data.remotedata.models.Login
 import com.example.tutortracking.data.remotedata.models.Register
+import com.example.tutortracking.data.remotedata.models.Tutor
 import com.example.tutortracking.data.remotedata.models.Update
 import com.example.tutortracking.util.Result
 import com.example.tutortracking.util.SessionManager
 import com.example.tutortracking.util.hasInternetConnection
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.withContext
+import okhttp3.internal.wait
 import javax.inject.Inject
 
 class TutorRepositoryImpl @Inject constructor(
@@ -23,9 +28,13 @@ class TutorRepositoryImpl @Inject constructor(
             Result.Error(message = "No Internet Connection")
         }else{
             try{
-                val result = tutorApi.registerTutor(tutor)
+                val result: UserResponse
+                withContext(Dispatchers.IO){
+                    result = tutorApi.registerTutor(tutor)
+                }
                 if(result.success){
                     sessionManager.updateSession(result.token!!, result.tutorInfo!!.name, result.tutorInfo.email)
+                    studentDao.upsertTutor(result.tutorInfo)
                     Result.Success(result, "Registered Successfully")
                 }else{
                     Result.Error(result.message.toString())
@@ -45,6 +54,7 @@ class TutorRepositoryImpl @Inject constructor(
                 val result = tutorApi.loginTutor(tutor)
                 if(result.success){
                     sessionManager.updateSession(result.token!!, result.tutorInfo!!.name, result.tutorInfo.email)
+                    studentDao.upsertTutor(result.tutorInfo)
                     Result.Success(result, "Logged In Successfully")
                 }else{
                     Result.Error(result.message.toString())
@@ -89,7 +99,7 @@ class TutorRepositoryImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override suspend fun logout(): Result<String> {
+    override suspend fun logout(): Result<UserResponse> {
         TODO("Not yet implemented")
     }
 
@@ -98,5 +108,8 @@ class TutorRepositoryImpl @Inject constructor(
     }
 
     override suspend fun validateUser() = sessionManager.getTutorToken()
+
+    override fun getCurrentUser(): Flow<List<Tutor>> = studentDao.getTutor()
+
 
 }

@@ -2,15 +2,16 @@ package com.example.tutortracking.data.localdata
 
 import androidx.room.*
 import com.example.tutortracking.data.localdata.models.LocalStudent
+import com.example.tutortracking.data.remotedata.models.Tutor
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface StudentDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun upsertStudent(student: LocalStudent)
+    suspend fun upsertStudent(student: LocalStudent)
 
     @Delete
-    fun deleteStudent(student: LocalStudent)
+    suspend fun deleteStudent(student: LocalStudent)
 
     @Query("SELECT * FROM studentTable")
     fun getAllStudents() : Flow<List<LocalStudent>>
@@ -20,4 +21,14 @@ interface StudentDao {
 
     @Query("SELECT * FROM studentTable ORDER BY studentYear")
     fun getAllStudentsOrderedByYear() : Flow<List<LocalStudent>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsertTutor(tutor: Tutor)
+
+    @Delete
+    suspend fun deleteTutor(tutor: Tutor)
+
+    @Query("SELECT * FROM tutor_table")
+    fun getTutor() : Flow<List<Tutor>>
+
 }

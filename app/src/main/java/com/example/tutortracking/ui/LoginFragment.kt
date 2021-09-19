@@ -43,7 +43,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     }
 
     private fun subscribeToTutorEvents() = lifecycleScope.launch {
-        viewModel.tutorState.collect { response->
+        viewModel.tutorLoginState.collect { response->
             when(response){
                 is Result.Loading-> showProgressBar()
                 is Result.Error ->{
@@ -66,6 +66,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     private fun showProgressBar() {
         binding.loginProgressBar.isVisible = true
     }
+
 
     override fun onDestroy() {
         super.onDestroy()

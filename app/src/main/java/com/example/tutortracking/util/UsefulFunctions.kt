@@ -19,7 +19,7 @@ fun getImageBytes(imageUri: Uri?, context: Context): ByteArray {
     val image = BitmapFactory.decodeStream(input, null, null)
     // Encode image to base64 string
     val baos = ByteArrayOutputStream()
-    image!!.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+    image!!.compress(Bitmap.CompressFormat.JPEG, 45, baos)
     return baos.toByteArray()
     //return Base64.encodeToString(imageBytes, Base64.DEFAULT)
 }

@@ -15,15 +15,6 @@
             app:destination="@id/loginFragment"
             app:popUpTo="@id/studentsListFragment"
             app:popUpToInclusive="true" />
-        <action
-            android:id="@+id/action_studentsListFragment_to_reviewsFragment"
-            app:destination="@id/reviewsFragment" />
-        <action
-            android:id="@+id/action_studentsListFragment_to_profileFragment"
-            app:destination="@id/profileFragment" />
-        <action
-            android:id="@+id/action_studentsListFragment_to_addStudentFragment"
-            app:destination="@id/addStudentFragment" />
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
@@ -48,6 +39,9 @@
             app:destination="@id/studentsListFragment"
             app:popUpTo="@id/loginFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_registerFragment_to_studentsListFragment2"
+            app:destination="@id/studentsListFragment" />
     </fragment>
     <fragment
         android:id="@+id/reviewsFragment"
@@ -58,7 +52,11 @@
         android:id="@+id/profileFragment"
         android:name="com.example.tutortracking.ui.ProfileFragment"
         android:label="Profile"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_profileFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
     <fragment
         android:id="@+id/addStudentFragment"
         android:name="com.example.tutortracking.ui.AddStudentFragment"

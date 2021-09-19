@@ -70,4 +70,5 @@ object AppModule {
         studentDao,
         tutorApi,
         sessionManager)
+
 }
