@@ -1,11 +1,20 @@
 package com.example.tutortracking.ui
 
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import android.content.res.ColorStateList
+import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -15,6 +24,7 @@ import com.example.tutortracking.R
 import com.example.tutortracking.databinding.FragmentProfileBinding
 import com.example.tutortracking.util.Result
 import com.example.tutortracking.util.decode
+import com.example.tutortracking.util.getImageBytes
 import com.example.tutortracking.util.getImageString
 import com.example.tutortracking.viewmodels.TutorViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,30 +38,136 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     private val binding
         get() = _binding!!
     private val viewModel: TutorViewModel by activityViewModels()
-
+    private var hasBeenUpdated = false
+    private lateinit var launcher: ActivityResultLauncher<Intent>
+    private var imageUri: Uri? = null
     override fun onStart() {
         super.onStart()
         setCurrentTutorInfo()
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        setUpLauncher()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentProfileBinding.bind(view)
         setHasOptionsMenu(true)
-
+        subscribeToTutorLogoutEvents()
+        subscribeToTutorUpdateEvents()
+        updateInfoIfNeeded()
     }
 
-    private fun setCurrentTutorInfo() = lifecycleScope.launch {
-        viewModel.currentTutor.collect { tutor ->
-            binding.profileImageView.setImageBitmap(decode(getImageString(tutor[0].profilePic!!)))
-            binding.profileNameEt.setText(tutor[0].name)
-            binding.profileEmailEt.setText(tutor[0].email)
-            binding.profileModulesEt.setText(tutor[0].modules.toString())
+    private fun updateInfoIfNeeded() {
+        binding.profileUpdateChip.setOnClickListener {
+            if(!hasBeenUpdated){
+                binding.apply {
+                    profileUpdateChip.text = "Done"
+                    disableOrEnableViews(!hasBeenUpdated,profileEmailEt, profileNameEt, profileModulesEt)
+                    profilePasswordEt.isVisible = true
+                    profileImageView.setOnClickListener {
+                        Intent(Intent.ACTION_PICK).also {
+                            it.type = "image/*"
+                            launcher.launch(it)
+                        }
+                    }
+                }
+                hasBeenUpdated = true
+            }else{
+                binding.apply {
+                    profileUpdateChip.text = "Update"
+                    disableOrEnableViews(!hasBeenUpdated,profileEmailEt, profileNameEt, profileModulesEt)
+                    profileImageView.isClickable = false
+                    profilePasswordEt.isVisible = false
+                    viewModel.update(profileEmailEt.text.toString(),
+                    profilePasswordEt.text.toString(),
+                    profileNameEt.text.toString(),
+                    profileModulesEt.text.toString(),
+                        if(imageUri!=null) getImageBytes(imageUri, requireContext()) else null)
+                }
+                hasBeenUpdated = false
+            }
+        }
+    }
+
+    private fun setCurrentTutorInfo() = lifecycleScope.launch{
+        viewModel.currentTutor.collect { currentTutor->
+            if(currentTutor.isNotEmpty()) {
+                binding.profileImageView.apply {
+                    when{
+                        currentTutor[0].profilePic != null-> setImageBitmap(decode(getImageString(currentTutor[0].profilePic)))
+                        imageUri!=null -> setImageURI(imageUri)
+                        else -> setImageResource(R.drawable.ic_user)
+                    }
+                }
+                binding.profileNameEt.setText(currentTutor[0].name)
+                binding.profileEmailEt.setText(currentTutor[0].email)
+                binding.profileModulesEt.setText(currentTutor[0].modules.toString())
+            }
+        }
+    }
+
+    fun disableOrEnableViews(shouldDisable: Boolean,vararg views: View){
+        for(view in views){
+            view.isEnabled = shouldDisable
         }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.profile_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if(item.itemId==R.id.logout){
+            viewModel.logout()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun subscribeToTutorLogoutEvents() = lifecycleScope.launch {
+        viewModel.tutorLogoutState.collect { response->
+            when(response){
+                is Result.Loading-> showProgressBar()
+                is Result.Error ->{
+                    hideProgressBar()
+                    Toast.makeText(requireContext(), response.message, Toast.LENGTH_LONG).show()
+                }
+                is Result.Success->{
+                    hideProgressBar()
+                    Toast.makeText(requireContext(), response.data.toString(), Toast.LENGTH_LONG).show()
+                    findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToLoginFragment())
+                }
+            }
+        }
+    }
+
+    private fun subscribeToTutorUpdateEvents() = lifecycleScope.launch {
+        viewModel.tutorUpdateState.collect { response->
+            when(response){
+                is Result.Loading-> showProgressBar()
+                is Result.Error ->{
+                    hideProgressBar()
+                    Toast.makeText(requireContext(), response.message, Toast.LENGTH_LONG).show()
+                }
+                is Result.Success->{
+                    hideProgressBar()
+                    Toast.makeText(requireContext(),"Successfully updated", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
+    private fun setUpLauncher() {
+        launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+            if(it.resultCode== Activity.RESULT_OK){
+                imageUri = it.data?.data
+                binding.profileImageView.setImageURI(imageUri)
+            }else{
+                Toast.makeText(requireContext(), "no image was selected", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private fun hideProgressBar() {

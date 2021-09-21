@@ -42,7 +42,7 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentRegisterBinding.bind(view)
 
-        subscribeToTutorEvents()
+        subscribeToTutorRegisterEvents()
 
         binding.registerRegisterChip.setOnClickListener{
             sendUserInput()
@@ -57,7 +57,7 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
 
     }
 
-    private fun subscribeToTutorEvents() = lifecycleScope.launch {
+    private fun subscribeToTutorRegisterEvents() = lifecycleScope.launch {
         viewModel.tutorRegisterState.collect { response->
             when(response){
                 is Result.Loading-> showProgressBar()
@@ -94,7 +94,7 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
         }
     }
 
-    private fun sendUserInput() = lifecycleScope.launch {
+    private fun sendUserInput() {
         val email = binding.registerEmailEt.text.toString()
         val name = binding.registerNameEt.text.toString()
         val password = binding.registerPasswordEt.text.toString()
@@ -102,6 +102,7 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
         val byteArrayPic = if(imageUri!=null) getImageBytes(imageUri, requireContext()) else null
         viewModel.register(email, password, name, modules, byteArrayPic)
     }
+
 
     override fun onDestroy() {
         super.onDestroy()

@@ -26,7 +26,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentLoginBinding.bind(view)
-        subscribeToTutorEvents()
+        subscribeToTutorLoginEvents()
 
         binding.haveAccountTv.setOnClickListener {
             findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToRegisterFragment())
@@ -42,7 +42,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         viewModel.login(email, password)
     }
 
-    private fun subscribeToTutorEvents() = lifecycleScope.launch {
+    private fun subscribeToTutorLoginEvents() = lifecycleScope.launch {
         viewModel.tutorLoginState.collect { response->
             when(response){
                 is Result.Loading-> showProgressBar()

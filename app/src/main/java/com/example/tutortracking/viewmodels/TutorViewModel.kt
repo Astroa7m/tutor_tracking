@@ -6,15 +6,15 @@ import com.example.tutortracking.data.common.models.UserResponse
 import com.example.tutortracking.data.remotedata.models.Login
 import com.example.tutortracking.data.remotedata.models.Register
 import com.example.tutortracking.data.remotedata.models.Tutor
+import com.example.tutortracking.data.remotedata.models.Update
 import com.example.tutortracking.data.repository.TutorRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.example.tutortracking.util.Result
 import com.example.tutortracking.util.areFieldsEmpty
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.*
 
 @HiltViewModel
 class TutorViewModel @Inject constructor(private val repository: TutorRepository) : ViewModel(){
@@ -22,27 +22,29 @@ class TutorViewModel @Inject constructor(private val repository: TutorRepository
         val tutorRegisterState = _tutorRegisterState.asSharedFlow()
         private val _tutorLoginState = MutableSharedFlow<Result<UserResponse>>()
         val tutorLoginState = _tutorLoginState.asSharedFlow()
-    private val _tutorLogoutState = MutableSharedFlow<Result<String>>()
+        private val _tutorLogoutState = MutableSharedFlow<Result<String>>()
         val tutorLogoutState = _tutorLogoutState.asSharedFlow()
         private val _shouldNavigateToRegister = MutableSharedFlow<Boolean>()
         val shouldNavigateToRegister = _shouldNavigateToRegister.asSharedFlow()
+        private val _tutorUpdateState = MutableSharedFlow<Result<UserResponse>>()
+        val tutorUpdateState = _tutorUpdateState.asSharedFlow()
         val currentTutor = repository.getCurrentUser()
 
-        init {
-            validateUser()
+    init {
+        validateUser()
         }
 
-    suspend fun register(
+    fun register(
         email: String,
         password: String,
         name: String,
         modules: String,
         profilePic: ByteArray?
-    )  {
+    ) = viewModelScope.launch {
         _tutorRegisterState.emit(Result.Loading())
         if(areFieldsEmpty(email.trim(), password.trim(), name.trim(), modules.trim())){
             _tutorRegisterState.emit(Result.Error("Some fields might be empty"))
-            return
+            return@launch
         }
         val modulesList = modules.split(",").map { it.trim() }
         val tutor = Register(email.trim(), password.trim(), name.trim(), modulesList, profilePic)
@@ -63,6 +65,23 @@ class TutorViewModel @Inject constructor(private val repository: TutorRepository
         _tutorLoginState.emit(repository.login(tutor))
     }
 
+    fun update(
+        email: String,
+        password: String,
+        name: String,
+        modules: String,
+        profilePic: ByteArray?
+    ) = viewModelScope.launch {
+        _tutorUpdateState.emit(Result.Loading())
+        val modulesList = modules.split(",").map { it.trim() }
+        if(name.isEmpty())
+            _tutorLogoutState.emit(Result.Error("Name cannot be empty"))
+        val tutor = Update(
+            email.trim(), if(password.isEmpty())null else password.trim(),
+            name.trim(), modulesList, profilePic)
+        _tutorUpdateState.emit(repository.update(tutor))
+    }
+
     private fun validateUser() = viewModelScope.launch {
         val token = repository.validateUser()
         if(token==null)
@@ -71,4 +90,8 @@ class TutorViewModel @Inject constructor(private val repository: TutorRepository
             _shouldNavigateToRegister.emit(false)
     }
 
+    fun logout() = viewModelScope.launch {
+        _tutorLogoutState.emit(Result.Loading())
+        _tutorLogoutState.emit(repository.logout())
+    }
 }

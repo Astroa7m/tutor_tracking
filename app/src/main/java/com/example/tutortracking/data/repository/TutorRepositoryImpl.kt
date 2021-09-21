@@ -14,6 +14,8 @@ import com.example.tutortracking.util.hasInternetConnection
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.withContext
 import okhttp3.internal.wait
 import javax.inject.Inject
@@ -24,61 +26,62 @@ class TutorRepositoryImpl @Inject constructor(
     private val sessionManager: SessionManager
 ) : TutorRepository {
     override suspend fun register(tutor: Register): Result<UserResponse> {
-        return if(!hasInternetConnection(sessionManager.context)){
+        return if (!hasInternetConnection(sessionManager.context)) {
             Result.Error(message = "No Internet Connection")
-        }else{
-            try{
+        } else {
+            try {
                 val result: UserResponse
-                withContext(Dispatchers.IO){
+                withContext(Dispatchers.IO) {
                     result = tutorApi.registerTutor(tutor)
                 }
-                if(result.success){
-                    sessionManager.updateSession(result.token!!, result.tutorInfo!!.name, result.tutorInfo.email)
-                    studentDao.upsertTutor(result.tutorInfo)
+                if (result.success) {
+                    sessionManager.updateSession(result.token!!)
+                    studentDao.upsertTutor(result.tutorInfo!!)
                     Result.Success(result, "Registered Successfully")
-                }else{
+                } else {
                     Result.Error(result.message.toString())
                 }
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 e.printStackTrace()
-                Result.Error(e.message?:"Error occurred while registering")
+                Result.Error(e.message ?: "Error occurred while registering")
             }
         }
     }
 
     override suspend fun login(tutor: Login): Result<UserResponse> {
-        return if(!hasInternetConnection(sessionManager.context)){
+        return if (!hasInternetConnection(sessionManager.context)) {
             Result.Error(message = "No Internet Connection")
-        }else{
-            return try{
+        } else {
+            return try {
                 val result = tutorApi.loginTutor(tutor)
-                if(result.success){
-                    sessionManager.updateSession(result.token!!, result.tutorInfo!!.name, result.tutorInfo.email)
-                    studentDao.upsertTutor(result.tutorInfo)
+                if (result.success) {
+                    sessionManager.updateSession(result.token!!)
+                    studentDao.upsertTutor(result.tutorInfo!!)
                     Result.Success(result, "Logged In Successfully")
-                }else{
+                } else {
                     Result.Error(result.message.toString())
                 }
-            }catch (e: Exception){
-                Result.Error(e.message?:"Error occurred while logging in")
+            } catch (e: Exception) {
+                Result.Error(e.message ?: "Error occurred while logging in")
             }
         }
     }
 
     override suspend fun update(update: Update): Result<UserResponse> {
-        return if(!hasInternetConnection(sessionManager.context)) {
+        return if (!hasInternetConnection(sessionManager.context)) {
             Result.Error(message = "No Internet Connection")
-        }else{
-           return try{
-                val token = sessionManager.getTutorToken()?: return Result.Error("No Token")
-                val result = tutorApi.updateTutor(update,"Bearer $token")
-                if(result.success){
+        } else {
+            return try {
+                val token = sessionManager.getTutorToken() ?: return Result.Error("No Token")
+                val result = tutorApi.updateTutor(update, "Bearer $token")
+                if (result.success) {
+                    studentDao.upsertTutor(result.tutorInfo!!)
                     Result.Success(result)
-                }else{
+                } else {
                     Result.Error(result.message.toString())
                 }
-            }catch (e: Exception){
-                Result.Error(e.message?:"Error occurred while updating")
+            } catch (e: Exception) {
+                Result.Error(e.message ?: "Error occurred while updating")
             }
         }
     }
@@ -99,8 +102,18 @@ class TutorRepositoryImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override suspend fun logout(): Result<UserResponse> {
-        TODO("Not yet implemented")
+    override suspend fun logout(): Result<String> {
+        return if (!hasInternetConnection(sessionManager.context)) {
+            Result.Error("No Internet Connection")
+        }else{
+            return try{
+                sessionManager.logout()
+                studentDao.deleteTutor()
+                Result.Success("Successfully logged out")
+            } catch (e: Exception){
+                Result.Error("Could not log out")
+            }
+        }
     }
 
     override suspend fun getAllStudentsFromServer(): Result<UserResponse> {
@@ -110,6 +123,5 @@ class TutorRepositoryImpl @Inject constructor(
     override suspend fun validateUser() = sessionManager.getTutorToken()
 
     override fun getCurrentUser(): Flow<List<Tutor>> = studentDao.getTutor()
-
 
 }

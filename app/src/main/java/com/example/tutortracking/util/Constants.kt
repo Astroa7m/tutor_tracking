@@ -10,7 +10,6 @@ object Constants {
     const val READ_STUDENTS = "$API_VERSION/students/read"
     const val UPDATE_STUDENTS = "$API_VERSION/students/update/{id}"
     const val DELETE_STUDENTS = "$API_VERSION/students/delete"
-    const val TUTOR_NAME_KEY = "TUTOR_KEY"
-    const val TUTOR_EMAIL_KEY = "TUTOR_EMAIL_KEY"
+    const val TUTOR_ID_KEY = "TUTOR_ID_KEY"
     const val TOKEN_KEY = "TOKEN"
 }

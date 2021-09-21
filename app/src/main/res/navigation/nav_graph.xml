@@ -24,10 +24,12 @@
         <action
             android:id="@+id/action_loginFragment_to_registerFragment"
             app:destination="@id/registerFragment"
-            app:popUpToInclusive="false" />
+            app:popUpTo="@id/loginFragment" />
         <action
             android:id="@+id/action_loginFragment_to_studentsListFragment"
-            app:destination="@id/studentsListFragment" />
+            app:destination="@id/studentsListFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
@@ -55,7 +57,9 @@
         tools:layout="@layout/fragment_profile" >
         <action
             android:id="@+id/action_profileFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/studentsListFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/addStudentFragment"

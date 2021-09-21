@@ -25,8 +25,8 @@ interface StudentDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertTutor(tutor: Tutor)
 
-    @Delete
-    suspend fun deleteTutor(tutor: Tutor)
+    @Query("DELETE FROM tutor_table")
+    suspend fun deleteTutor()
 
     @Query("SELECT * FROM tutor_table")
     fun getTutor() : Flow<List<Tutor>>

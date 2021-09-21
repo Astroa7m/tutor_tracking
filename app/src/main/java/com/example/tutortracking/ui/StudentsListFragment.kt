@@ -26,8 +26,6 @@ class StudentsListFragment : Fragment(R.layout.fragment_students_list) {
     private var _binding: FragmentStudentsListBinding? =null
     private val binding:FragmentStudentsListBinding?
         get() = _binding!!
-    @Inject
-    lateinit var sessionManager: SessionManager
     private val viewModel : TutorViewModel by activityViewModels()
 
     override fun onStart() {

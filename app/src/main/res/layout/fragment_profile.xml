@@ -24,6 +24,26 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
+            android:id="@+id/profile_password_et"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="32dp"
+            android:background="@drawable/edit_text_background"
+            android:ems="10"
+            android:visibility="gone"
+            android:fontFamily="@font/stoke_light"
+            android:hint="Tutor's new password"
+            android:inputType="textPassword"
+            android:paddingLeft="8dp"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profile_email_et" />
+
+        <EditText
             android:id="@+id/profile_modules_et"
             android:layout_width="0dp"
             android:layout_height="40dp"
@@ -41,7 +61,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/profile_email_et" />
+            app:layout_constraintTop_toBottomOf="@+id/profile_password_et" />
 
         <EditText
             android:id="@+id/profile_name_et"

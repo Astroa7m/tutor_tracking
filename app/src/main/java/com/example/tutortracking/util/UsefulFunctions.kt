@@ -24,7 +24,7 @@ fun getImageBytes(imageUri: Uri?, context: Context): ByteArray {
     //return Base64.encodeToString(imageBytes, Base64.DEFAULT)
 }
 
-fun getImageString(imageByteArray: ByteArray) : String = Base64.encodeToString(imageByteArray, Base64.DEFAULT)
+fun getImageString(imageByteArray: ByteArray?) : String = Base64.encodeToString(imageByteArray, Base64.DEFAULT)
 
 fun decode(imageString: String) : Bitmap{
 
