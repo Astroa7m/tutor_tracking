@@ -109,7 +109,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         }
     }
 
-    fun disableOrEnableViews(shouldDisable: Boolean,vararg views: View){
+    private fun disableOrEnableViews(shouldDisable: Boolean,vararg views: View){
         for(view in views){
             view.isEnabled = shouldDisable
         }

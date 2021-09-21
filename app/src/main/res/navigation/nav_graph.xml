@@ -15,6 +15,9 @@
             app:destination="@id/loginFragment"
             app:popUpTo="@id/studentsListFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_studentsListFragment_to_addStudentBottomSheetFragment"
+            app:destination="@id/addStudentBottomSheetFragment" />
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
@@ -66,4 +69,8 @@
         android:name="com.example.tutortracking.ui.AddStudentFragment"
         android:label="Add Student"
         tools:layout="@layout/fragment_add_student" />
+    <dialog
+        android:id="@+id/addStudentBottomSheetFragment"
+        android:name="com.example.tutortracking.ui.AddStudentBottomSheetFragment"
+        android:label="AddStudentBottomSheetFragment" />
 </navigation>

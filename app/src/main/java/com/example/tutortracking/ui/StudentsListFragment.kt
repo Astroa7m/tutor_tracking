@@ -1,21 +1,18 @@
 package com.example.tutortracking.ui
 
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.widget.ListAdapter
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.tutortracking.R
+import com.example.tutortracking.adapters.StudentsAdapter
 import com.example.tutortracking.databinding.FragmentStudentsListBinding
-import com.example.tutortracking.util.SessionManager
 import com.example.tutortracking.viewmodels.TutorViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -27,6 +24,9 @@ class StudentsListFragment : Fragment(R.layout.fragment_students_list) {
     private val binding:FragmentStudentsListBinding?
         get() = _binding!!
     private val viewModel : TutorViewModel by activityViewModels()
+    val adapter: StudentsAdapter by lazy { StudentsAdapter{
+
+    }}
 
     override fun onStart() {
         super.onStart()
@@ -36,6 +36,7 @@ class StudentsListFragment : Fragment(R.layout.fragment_students_list) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentStudentsListBinding.bind(view)
+        setHasOptionsMenu(true)
     }
 
     private fun validateUser() = lifecycleScope.launch {
@@ -47,6 +48,18 @@ class StudentsListFragment : Fragment(R.layout.fragment_students_list) {
 
     private fun navigateToLoginScreen() {
         findNavController().navigate(StudentsListFragmentDirections.actionStudentsListFragmentToLoginFragment())
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.main_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if(item.itemId==R.id.add_student){
+            findNavController().navigate(StudentsListFragmentDirections.actionStudentsListFragmentToAddStudentBottomSheetFragment())
+            return true
+        }
+        return false
     }
 
     override fun onDestroy() {
