@@ -57,7 +57,7 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
 
     }
 
-    private fun subscribeToTutorRegisterEvents() = lifecycleScope.launch {
+    private fun subscribeToTutorRegisterEvents() = viewLifecycleOwner.lifecycleScope.launch {
         viewModel.tutorRegisterState.collect { response->
             when(response){
                 is Result.Loading-> showProgressBar()

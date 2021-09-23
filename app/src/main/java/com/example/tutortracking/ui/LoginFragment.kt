@@ -42,7 +42,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         viewModel.login(email, password)
     }
 
-    private fun subscribeToTutorLoginEvents() = lifecycleScope.launch {
+    private fun subscribeToTutorLoginEvents() = viewLifecycleOwner.lifecycleScope.launch {
         viewModel.tutorLoginState.collect { response->
             when(response){
                 is Result.Loading-> showProgressBar()

@@ -58,6 +58,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         subscribeToTutorLogoutEvents()
         subscribeToTutorUpdateEvents()
         updateInfoIfNeeded()
+        (activity as MainActivity).hasSessionStarted = false
     }
 
     private fun updateInfoIfNeeded() {
@@ -67,6 +68,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                     profileUpdateChip.text = "Done"
                     disableOrEnableViews(!hasBeenUpdated,profileEmailEt, profileNameEt, profileModulesEt)
                     profilePasswordEt.isVisible = true
+                    profileUpdateChip.setChipBackgroundColorResource(R.color.synced)
                     profileImageView.setOnClickListener {
                         Intent(Intent.ACTION_PICK).also {
                             it.type = "image/*"
@@ -78,6 +80,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             }else{
                 binding.apply {
                     profileUpdateChip.text = "Update"
+                    profileUpdateChip.setChipBackgroundColorResource(R.color.my_greish)
                     disableOrEnableViews(!hasBeenUpdated,profileEmailEt, profileNameEt, profileModulesEt)
                     profileImageView.isClickable = false
                     profilePasswordEt.isVisible = false
@@ -92,7 +95,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         }
     }
 
-    private fun setCurrentTutorInfo() = lifecycleScope.launch{
+    private fun setCurrentTutorInfo() = viewLifecycleOwner.lifecycleScope.launch{
         viewModel.currentTutor.collect { currentTutor->
             if(currentTutor.isNotEmpty()) {
                 binding.profileImageView.apply {
@@ -104,7 +107,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 }
                 binding.profileNameEt.setText(currentTutor[0].name)
                 binding.profileEmailEt.setText(currentTutor[0].email)
-                binding.profileModulesEt.setText(currentTutor[0].modules.toString())
+                binding.profileModulesEt.setText(currentTutor[0].modules.joinToString(separator = ","))
             }
         }
     }
@@ -126,7 +129,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun subscribeToTutorLogoutEvents() = lifecycleScope.launch {
+    private fun subscribeToTutorLogoutEvents() = viewLifecycleOwner.lifecycleScope.launch {
         viewModel.tutorLogoutState.collect { response->
             when(response){
                 is Result.Loading-> showProgressBar()
@@ -143,7 +146,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         }
     }
 
-    private fun subscribeToTutorUpdateEvents() = lifecycleScope.launch {
+    private fun subscribeToTutorUpdateEvents() = viewLifecycleOwner.lifecycleScope.launch {
         viewModel.tutorUpdateState.collect { response->
             when(response){
                 is Result.Loading-> showProgressBar()

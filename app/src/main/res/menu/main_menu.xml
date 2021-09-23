@@ -2,8 +2,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 <item android:id="@+id/add_student"
-    android:icon="@drawable/ic_add_user"
+    android:icon="@drawable/ic_add"
     android:title="Add student"
     app:showAsAction="always"
     android:iconTint="@color/white"/>
+    <item android:id="@+id/search_student"
+        app:actionViewClass="android.widget.SearchView"
+        android:title="Search student"
+        app:showAsAction="always"
+        android:iconTint="@color/white"/>
 </menu>

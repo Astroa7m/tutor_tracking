@@ -17,10 +17,13 @@ class StudentsAdapter(private val clickListener: (LocalStudent)->Unit) : ListAda
     class StudentHolder(private val binding: StudentListItemsBinding, getItemAtPos: (Int)->Unit?) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: LocalStudent?, context: Context) {
             binding.apply {
-                listItemsImage.setImageBitmap(decode(getImageString(item?.studentPic)))
+                if(item?.studentPic!=null)
+                    listItemsImage.setImageBitmap(decode(getImageString(item.studentPic)))
+                else
+                    listItemsImage.setImageResource(R.drawable.ic_user)
                 listItemsName.text = item!!.studentName
-                listItemsSubject.text = context.getString(R.string.student_subject, item.studentYear.toString())
-                listItemsYear.text = context.getString(R.string.student_year, item.studentYear.toString())
+                listItemsSubject.text = item.studentSubject.toString()/*context.getString(R.string.student_subject, item.studentSubject.toString())*/
+                listItemsYear.text =  item.studentYear.toString() /*context.getString(R.string.student_year, item.studentYear.toString())*/
                 listItemsSyncText.text = if(item.isConnected) "synced" else "not synced"
                 listItemsSyncView.setBackgroundColor(
                     if(item.isConnected)
@@ -31,20 +34,21 @@ class StudentsAdapter(private val clickListener: (LocalStudent)->Unit) : ListAda
             }
         }
         init {
-            getItemAtPos(bindingAdapterPosition)
+            binding.root.setOnClickListener {getItemAtPos(bindingAdapterPosition)}
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StudentHolder {
-        val view = StudentHolder(
+
+        return StudentHolder(
             StudentListItemsBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
-                false)){
+                false
+            )
+        ) {
             clickListener(currentList[it])
         }
-
-        return view
     }
 
     override fun onBindViewHolder(holder: StudentHolder, position: Int) {

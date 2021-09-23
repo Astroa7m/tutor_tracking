@@ -12,4 +12,5 @@ object Constants {
     const val DELETE_STUDENTS = "$API_VERSION/students/delete"
     const val TUTOR_ID_KEY = "TUTOR_ID_KEY"
     const val TOKEN_KEY = "TOKEN"
+    const val SESSION_KEY = "SESSION_KEY"
 }

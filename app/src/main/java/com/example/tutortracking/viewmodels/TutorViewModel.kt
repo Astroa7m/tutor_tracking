@@ -13,7 +13,6 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.example.tutortracking.util.Result
 import com.example.tutortracking.util.areFieldsEmpty
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 
 @HiltViewModel
@@ -72,8 +71,8 @@ class TutorViewModel @Inject constructor(private val repository: TutorRepository
         modules: String,
         profilePic: ByteArray?
     ) = viewModelScope.launch {
-        _tutorUpdateState.emit(Result.Loading())
         val modulesList = modules.split(",").map { it.trim() }
+        _tutorUpdateState.emit(Result.Loading())
         if(name.isEmpty())
             _tutorLogoutState.emit(Result.Error("Name cannot be empty"))
         val tutor = Update(
