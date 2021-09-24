@@ -41,10 +41,6 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     private var hasBeenUpdated = false
     private lateinit var launcher: ActivityResultLauncher<Intent>
     private var imageUri: Uri? = null
-    override fun onStart() {
-        super.onStart()
-        setCurrentTutorInfo()
-    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -58,6 +54,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         subscribeToTutorLogoutEvents()
         subscribeToTutorUpdateEvents()
         updateInfoIfNeeded()
+        setCurrentTutorInfo()
         (activity as MainActivity).hasSessionStarted = false
     }
 

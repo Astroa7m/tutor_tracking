@@ -38,12 +38,6 @@ class StudentsListFragment : Fragment(R.layout.fragment_students_list), SearchVi
     private val studentsViewModel : StudentViewModel by activityViewModels()
     private lateinit var adapter: StudentsAdapter
 
-
-    override fun onStart() {
-        super.onStart()
-        validateUser()
-    }
-
     override fun onResume() {
         super.onResume()
         val hasSessionStarted = (activity as MainActivity).hasSessionStarted
@@ -59,6 +53,7 @@ class StudentsListFragment : Fragment(R.layout.fragment_students_list), SearchVi
         setHasOptionsMenu(true)
         setUpRV()
         setList()
+        validateUser()
         subscribeToDeleteEvents()
         binding!!.swipeRefreshLayout.setOnRefreshListener {
                 syncData()
@@ -116,7 +111,7 @@ class StudentsListFragment : Fragment(R.layout.fragment_students_list), SearchVi
                     studentsViewModel.deleteStudent(deletionTarget)
                     Snackbar.make(
                         binding!!.root,
-                        "",
+                        "Student ${deletionTarget.studentName} was deleted",
                         Snackbar.LENGTH_LONG)
                         .setAction("Undo"){
                             studentsViewModel.addStudent(
@@ -141,7 +136,7 @@ class StudentsListFragment : Fragment(R.layout.fragment_students_list), SearchVi
                 }
                 is Result.Success->{
                     hideProgressBar()
-                    Toast.makeText(requireContext(), response.data!!.message.toString(), Toast.LENGTH_LONG).show()
+                    //Toast.makeText(requireContext(), response.data!!.message.toString(), Toast.LENGTH_LONG).show()
                 }
             }
         }
