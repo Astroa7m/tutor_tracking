@@ -19,7 +19,7 @@
         android:ems="10"
         android:fontFamily="@font/stoke_light"
         android:hint="Email"
-        android:inputType="textEmailAddress"
+        android:inputType="textEmailAddress|textCapSentences"
         android:paddingLeft="8dp"
         android:textColor="@color/white"
         app:layout_constraintBottom_toTopOf="@+id/login_password_et"

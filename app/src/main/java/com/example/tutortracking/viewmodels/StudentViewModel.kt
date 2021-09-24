@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.example.tutortracking.util.Result
+import com.example.tutortracking.util.doNamesOperations
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -36,7 +37,9 @@ class StudentViewModel @Inject constructor(private val repository: TutorReposito
             return@launch
         }
         _addStudentState.emit(Result.Loading())
-        val result = repository.addStudent(LocalStudent(name.trim(), year.trim().toInt(), subject.trim(), studentPic = studentImageByteArray, _id = UUID.randomUUID().toString()))
+        val result = repository.addStudent(LocalStudent(name.doNamesOperations(), year.trim().toInt(),
+            subject.trim()
+                .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }, studentPic = studentImageByteArray, _id = UUID.randomUUID().toString()))
         _addStudentState.emit(result)
     }
 
@@ -52,7 +55,9 @@ class StudentViewModel @Inject constructor(private val repository: TutorReposito
             return@launch
         }
         _updateStudentState.emit(Result.Loading())
-        val result = repository.updateStudent(LocalStudent(name.trim(), year.trim().toInt(), subject.trim(), studentPic = studentImageByteArray, _id = id), id)
+        val result = repository.updateStudent(LocalStudent(name.doNamesOperations(), year.trim().toInt(),
+            subject.trim()
+                .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }, studentPic = studentImageByteArray, _id = id), id)
         _updateStudentState.emit(result)
     }
 

@@ -13,13 +13,18 @@ import com.example.tutortracking.data.remotedata.models.Student
 import com.example.tutortracking.data.remotedata.models.Tutor
 import com.example.tutortracking.data.remotedata.models.Update
 import java.io.ByteArrayOutputStream
+import java.util.*
 
 fun areFieldsEmpty(
     email: String,
     password: String,
     name:String?=null,
     modules: String?=null
-) = name?.isEmpty()?: false || email.isEmpty() || password.isEmpty() || modules?.isEmpty()?: false
+)
+= name?.isEmpty()?: false
+        || email.isEmpty()
+        || password.isEmpty()
+        || modules?.isEmpty()?: false
 
 fun getImageBytes(imageUri: Uri?, context: Context): ByteArray {
     val input = context.contentResolver.openInputStream(imageUri!!)
@@ -31,19 +36,12 @@ fun getImageBytes(imageUri: Uri?, context: Context): ByteArray {
     //return Base64.encodeToString(imageBytes, Base64.DEFAULT)
 }
 
-fun getNecessaryUpdateFields(oldItem: Tutor, newItem: Tutor) : Update {
-    val email: String? = if(oldItem.email==newItem.email) null else newItem.email
-    val name: String? = if(oldItem.name==newItem.name) null else newItem.name
-    val imageByteArray: ByteArray? = if(oldItem.profilePic.contentEquals(newItem.profilePic)) null else newItem.profilePic
-    val modules: List<String>? = if(oldItem.modules==newItem.modules) null else newItem.modules
-    //password is not hashed it's just passed from userInput for now
-    return Update(email?.trim(), if(newItem.hashedPassword.isEmpty()) null else newItem.hashedPassword.trim(), name?.trim(), modules, imageByteArray)
-}
+fun getImageString(imageByteArray: ByteArray?) : String
+= Base64.encodeToString(
+    imageByteArray,
+    Base64.DEFAULT)
 
-fun getImageString(imageByteArray: ByteArray?) : String = Base64.encodeToString(imageByteArray, Base64.DEFAULT)
-
-fun decode(imageString: String) : Bitmap?{
-
+fun decode(imageString: String): Bitmap? {
     // Decode base64 string to image
     val imageBytes = Base64.decode(imageString, Base64.DEFAULT)
     val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
@@ -51,18 +49,61 @@ fun decode(imageString: String) : Bitmap?{
         return decodedImage
     }
     return null
-    //binding.imageView.setImageBitmap(decodedImage)
 }
 
-fun getLocallyAddedFromStudent(student: LocalStudent) = LocallyAddedStudent(student.studentName, student.studentYear, student.studentSubject,
-    student.studentTutorId, student.studentPic, student._id)
+fun getLocallyAddedFromStudent(student: LocalStudent)
+= LocallyAddedStudent(
+    student.studentName,
+    student.studentYear,
+    student.studentSubject,
+    student.studentTutorId,
+    student.studentPic,
+    student._id)
 
-fun getLocallyUpdatedFromStudent(student: LocalStudent) = LocallyUpdatedStudent(student.studentName, student.studentYear, student.studentSubject,
-    student.studentTutorId, student.studentPic, student._id)
+fun getLocallyUpdatedFromStudent(student: LocalStudent)
+= LocallyUpdatedStudent(
+    student.studentName,
+    student.studentYear,
+    student.studentSubject,
+    student.studentTutorId,
+    student.studentPic,
+    student._id)
 
-fun getLocallyDeletedFromStudent(student: LocalStudent) = LocallyDeletedStudent(student.studentName, student.studentYear, student.studentSubject,
-    student.studentTutorId, student.studentPic, student._id)
+fun getLocallyDeletedFromStudent(
+    student: LocalStudent)
+= LocallyDeletedStudent(student.studentName,
+    student.studentYear,
+    student.studentSubject,
+    student.studentTutorId,
+    student.studentPic
+    , student._id)
 
-fun getStudentFromLocallyAdded(locallyAdded: LocallyAddedStudent) = Student(locallyAdded.studentName, locallyAdded.studentYear, locallyAdded.studentSubject, locallyAdded.studentTutorId, locallyAdded.studentPic,  locallyAdded._id)
+fun getStudentFromLocallyAdded(
+    locallyAdded: LocallyAddedStudent)
+= Student(locallyAdded.studentName,
+    locallyAdded.studentYear,
+    locallyAdded.studentSubject,
+    locallyAdded.studentTutorId,
+    locallyAdded.studentPic,
+    locallyAdded._id)
 
-fun getStudentFromLocallyUpdated(locallyUpdated: LocallyUpdatedStudent) = Student(locallyUpdated.studentName, locallyUpdated.studentYear, locallyUpdated.studentSubject, locallyUpdated.studentTutorId, locallyUpdated.studentPic,  locallyUpdated._id)
+fun getStudentFromLocallyUpdated(
+    locallyUpdated: LocallyUpdatedStudent)
+= Student(locallyUpdated.studentName,
+    locallyUpdated.studentYear,
+    locallyUpdated.studentSubject,
+    locallyUpdated.studentTutorId,
+    locallyUpdated.studentPic,
+    locallyUpdated._id)
+fun String.doNamesOperations() : String{
+    return this.trim()
+        .split(" ")
+        .map { name->
+            name.replaceFirstChar { firstChat->
+                if (firstChat.isLowerCase())
+                    firstChat.titlecase(Locale.getDefault())
+                else
+                    firstChat.toString()
+            }
+        }.joinToString(separator = " ")
+}
