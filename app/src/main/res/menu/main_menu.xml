@@ -1,14 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-<item android:id="@+id/add_student"
-    android:icon="@drawable/ic_add"
-    android:title="Add student"
-    app:showAsAction="always"
-    android:iconTint="@color/white"/>
-    <item android:id="@+id/search_student"
-        app:actionViewClass="android.widget.SearchView"
+    <item
+        android:id="@+id/add_student"
+        android:icon="@drawable/ic_add"
+        android:iconTint="@color/white"
+        android:title="Add student"
+        app:showAsAction="always" />
+    <item
+        android:icon="@drawable/ic_sort"
+        android:title="Sort"
+        app:showAsAction="always">
+        <menu>
+            <item
+                android:id="@+id/by_name"
+                android:title="Sort by name" />
+            <item
+                android:id="@+id/by_year"
+                android:title="Sort by year" />
+            <item
+                android:id="@+id/by_subject"
+                android:title="Sort by subject" />
+        </menu>
+    </item>
+    <item
+        android:id="@+id/search_student"
+        android:iconTint="@color/white"
         android:title="Search student"
-        app:showAsAction="always"
-        android:iconTint="@color/white"/>
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        app:showAsAction="always" />
+
 </menu>

@@ -1,32 +1,33 @@
 package com.example.tutortracking.ui
 
 import android.os.Bundle
-import android.view.*
-import android.widget.SearchView
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
+import androidx.appcompat.widget.SearchView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.addRepeatingJob
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tutortracking.R
 import com.example.tutortracking.adapters.StudentsAdapter
 import com.example.tutortracking.databinding.FragmentStudentsListBinding
 import com.example.tutortracking.util.Result
-import com.example.tutortracking.util.SessionManager
 import com.example.tutortracking.util.SimpleGesture
+import com.example.tutortracking.util.SortOrder
 import com.example.tutortracking.viewmodels.StudentViewModel
 import com.example.tutortracking.viewmodels.TutorViewModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import javax.inject.Inject
-import kotlin.properties.Delegates
 
 
 @AndroidEntryPoint
@@ -41,12 +42,13 @@ class StudentsListFragment : Fragment(R.layout.fragment_students_list), SearchVi
     override fun onResume() {
         super.onResume()
         val hasSessionStarted = (activity as MainActivity).hasSessionStarted
-        if (hasSessionStarted) {
+        if (hasSessionStarted && adapter.currentList.isNotEmpty()) {
             binding!!.swipeRefreshLayout.isRefreshing = true
             syncData()
         }
     }
 
+    @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentStudentsListBinding.bind(view)
@@ -91,15 +93,30 @@ class StudentsListFragment : Fragment(R.layout.fragment_students_list), SearchVi
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.add_student)
-            findNavController().navigate(StudentsListFragmentDirections.actionStudentsListFragmentToAddStudentBottomSheetFragment())
+        when(item.itemId){
+            R.id.add_student -> findNavController().navigate(StudentsListFragmentDirections.actionStudentsListFragmentToAddStudentBottomSheetFragment())
+            R.id.by_name -> sortBy(SortOrder.BY_NAME)
+            R.id.by_year -> sortBy(SortOrder.BY_YEAR)
+            R.id.by_subject -> sortBy(SortOrder.BY_SUBJECT)
+        }
         return super.onOptionsItemSelected(item)
     }
 
+    private fun sortBy(sortOrder: SortOrder) {
+        studentsViewModel.updatePreferences(sortOrder)
+    }
+
+    private fun moveToFirst() {
+       binding!!.mainRecyclerView.smoothScrollToPosition(0)
+    }
+
+    @ExperimentalCoroutinesApi
     private fun setList() = viewLifecycleOwner.lifecycleScope.launch {
         studentsViewModel.studentsList.collect {
             binding!!.noStudentsText.isVisible = it.isEmpty()
-            adapter.submitList(it)
+            adapter.submitList(it){
+                moveToFirst()
+            }
         }
     }
 
@@ -151,9 +168,12 @@ class StudentsListFragment : Fragment(R.layout.fragment_students_list), SearchVi
     }
 
     private fun setUpRV(){
-        adapter = StudentsAdapter {
+        adapter = StudentsAdapter ({
             findNavController().navigate(StudentsListFragmentDirections.actionStudentsListFragmentToAddStudentBottomSheetFragment(it))
-        }
+        },
+            {
+                moveToFirst()
+            })
         binding!!.mainRecyclerView.also {
             it.adapter = adapter
             ItemTouchHelper(simpleGestureCallBack).attachToRecyclerView(it)
@@ -168,23 +188,29 @@ class StudentsListFragment : Fragment(R.layout.fragment_students_list), SearchVi
     override fun onQueryTextSubmit(query: String?): Boolean {
         query?.let {
             viewLifecycleOwner.lifecycleScope.launch {
-                studentsViewModel.getSearchedStudent(query).collect {
-                    adapter.submitList(it)
-                }
+                studentsViewModel.searchQuery.emit(query)
             }
         }
+       updateEmptyListText(query)
         return true
     }
+
 
     override fun onQueryTextChange(query: String?): Boolean {
         query?.let {
             viewLifecycleOwner.lifecycleScope.launch {
-                studentsViewModel.getSearchedStudent(query).collect {
-                    adapter.submitList(it)
-                }
+                studentsViewModel.searchQuery.emit(query)
             }
         }
+        updateEmptyListText(query)
         return true
+    }
+
+    private fun updateEmptyListText(query: String?) {
+        when{
+            query!! == "" && adapter.currentList.isEmpty() -> binding!!.noStudentsText.text = getString(R.string.no_students)
+            query != "" && adapter.currentList.isEmpty() ->  binding!!.noStudentsText.text = getString(R.string.no_student_from_search)
+        }
     }
 
 }

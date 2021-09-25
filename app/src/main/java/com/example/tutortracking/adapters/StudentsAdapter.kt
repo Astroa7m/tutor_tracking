@@ -12,7 +12,7 @@ import com.example.tutortracking.databinding.StudentListItemsBinding
 import com.example.tutortracking.util.decode
 import com.example.tutortracking.util.getImageString
 
-class StudentsAdapter(private val clickListener: (LocalStudent)->Unit) : ListAdapter<LocalStudent, StudentsAdapter.StudentHolder>(DiffUtilCallback()) {
+class StudentsAdapter(private inline val clickListener: (LocalStudent)->Unit, private inline val moveToFirst : ()->Unit) : ListAdapter<LocalStudent, StudentsAdapter.StudentHolder>(DiffUtilCallback()) {
 
     class StudentHolder(private val binding: StudentListItemsBinding, getItemAtPos: (Int)->Unit?) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: LocalStudent?, context: Context) {
@@ -53,6 +53,11 @@ class StudentsAdapter(private val clickListener: (LocalStudent)->Unit) : ListAda
 
     override fun onBindViewHolder(holder: StudentHolder, position: Int) {
        holder.bind(getItem(position),holder.itemView.context)
+    }
+
+    override fun submitList(list: MutableList<LocalStudent>?) {
+        super.submitList(list)
+        moveToFirst()
     }
 
     class DiffUtilCallback : DiffUtil.ItemCallback<LocalStudent>(){

@@ -13,7 +13,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.withContext
-import java.util.*
 import javax.inject.Inject
 
 class TutorRepositoryImpl @Inject constructor(
@@ -108,11 +107,13 @@ class TutorRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getAllStudentsLocally(): Flow<List<LocalStudent>> {
+    override fun getAllStudentsLocally(
+        query: String,
+        sortOrder: SortOrder
+    ): Flow<List<LocalStudent>> {
         return try{
-            studentDao.getAllStudents()
+            studentDao.getStudents(query, sortOrder)
         }catch (e: Exception){
-            e.printStackTrace()
             emptyFlow()
         }
     }
@@ -168,7 +169,7 @@ class TutorRepositoryImpl @Inject constructor(
         }else{
             return try{
                 sessionManager.logout()
-                studentDao.dropStudents()
+                studentDao.deleteAllLocalStudents()
                 studentDao.deleteTutor()
                 studentDao.deleteRecordsFromLocallyAddedStudent()
                 studentDao.deleteRecordsFromLocallyUpdatedStudent()
@@ -261,7 +262,7 @@ class TutorRepositoryImpl @Inject constructor(
             val data = getAllStudentsFromServer()
             if(data.data!!.studentsList.isNullOrEmpty())
                 studentDao.deleteAllLocalStudents()
-            val localStudents  = studentDao.getAllStudentsForChecking()
+            val localStudents  = studentDao.getAllStudentsForAsList()
             val convertedLocalToRemote = mutableListOf<Student>()
             localStudents.forEach {
                 convertedLocalToRemote.add(Student(it.studentName, it.studentYear, it.studentSubject,it.studentTutorId,
@@ -293,6 +294,5 @@ class TutorRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun searchStudent(query: String) = studentDao.searchStudents(query)
-
+    override suspend fun getAllStudentsAsList() = studentDao.getAllStudentsForAsList()
 }

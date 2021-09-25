@@ -26,6 +26,7 @@ import com.example.tutortracking.util.Result
 import com.example.tutortracking.util.decode
 import com.example.tutortracking.util.getImageBytes
 import com.example.tutortracking.util.getImageString
+import com.example.tutortracking.viewmodels.StudentViewModel
 import com.example.tutortracking.viewmodels.TutorViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
@@ -104,6 +105,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 }
                 binding.profileNameEt.setText(currentTutor[0].name)
                 binding.profileEmailEt.setText(currentTutor[0].email)
+                binding.profileStudentCount.text = getString(R.string.student_count, viewModel.getStudentsCount())
                 binding.profileModulesEt.setText(currentTutor[0].modules.joinToString(separator = ","))
             }
         }

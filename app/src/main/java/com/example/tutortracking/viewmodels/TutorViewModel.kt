@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.*
 import java.util.*
 
 @HiltViewModel
-class TutorViewModel @Inject constructor(private val repository: TutorRepository) : ViewModel(){
+class TutorViewModel @Inject constructor(@PublishedApi internal val repository: TutorRepository) : ViewModel(){
         private val _tutorRegisterState = MutableSharedFlow<Result<UserResponse>>()
         val tutorRegisterState = _tutorRegisterState.asSharedFlow()
         private val _tutorLoginState = MutableSharedFlow<Result<UserResponse>>()
@@ -118,8 +118,13 @@ class TutorViewModel @Inject constructor(private val repository: TutorRepository
             _shouldNavigateToRegister.emit(false)
     }
 
+    suspend fun getStudentsCount() : Int{
+        return repository.getAllStudentsAsList().size
+    }
+
     fun logout() = viewModelScope.launch {
         _tutorLogoutState.emit(Result.Loading())
         _tutorLogoutState.emit(repository.logout())
     }
+
 }

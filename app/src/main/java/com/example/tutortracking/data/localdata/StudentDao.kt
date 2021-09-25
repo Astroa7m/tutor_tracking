@@ -6,10 +6,13 @@ import com.example.tutortracking.data.localdata.models.LocallyAddedStudent
 import com.example.tutortracking.data.localdata.models.LocallyDeletedStudent
 import com.example.tutortracking.data.localdata.models.LocallyUpdatedStudent
 import com.example.tutortracking.data.remotedata.models.Tutor
+import com.example.tutortracking.util.SortOrder
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface StudentDao {
+
+    // Students CRUD operations
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertStudent(student: LocalStudent)
 
@@ -18,32 +21,37 @@ interface StudentDao {
 
     @Query("DELETE FROM studentTable WHERE _id = :id")
     suspend fun deleteStudentById(id: String)
+
     @Query("DELETE FROM studentTable")
     suspend fun deleteAllLocalStudents()
 
+    // read students and search functionality
+    fun getStudents(searchQuery: String, sortOrder: SortOrder) : Flow<List<LocalStudent>> =
+        when(sortOrder){
+            SortOrder.BY_NAME -> getStudentsSortedByName(searchQuery)
+            SortOrder.BY_SUBJECT-> getStudentsSortedBySubject(searchQuery)
+            SortOrder.BY_YEAR-> getStudentsSortedByYear(searchQuery)
+        }
+
     @Query("SELECT * FROM studentTable")
-    fun getAllStudents() : Flow<List<LocalStudent>>
+    suspend fun getAllStudentsForAsList() : List<LocalStudent>
 
-    @Query("SELECT * FROM studentTable ORDER BY studentName")
-    fun getAllStudentsOrderedByName() : Flow<List<LocalStudent>>
+    @Query("SELECT * FROM studentTable WHERE studentSubject LIKE '%' || :query || '%' OR studentYear LIKE '%' || :query || '%' OR studentName LIKE '%' || :query || '%' ORDER BY studentName")
+    fun getStudentsSortedByName(query: String) : Flow<List<LocalStudent>>
 
-    @Query("SELECT * FROM studentTable ORDER BY studentYear")
-    fun getAllStudentsOrderedByYear() : Flow<List<LocalStudent>>
+    @Query("SELECT * FROM studentTable WHERE studentSubject LIKE '%' || :query || '%' OR studentYear LIKE '%' || :query || '%' OR studentName LIKE '%' || :query || '%' ORDER BY studentYear")
+    fun getStudentsSortedByYear(query: String) : Flow<List<LocalStudent>>
 
-    @Query("SELECT * FROM studentTable")
-    suspend fun getAllStudentsForChecking() : List<LocalStudent>
+    @Query("SELECT * FROM studentTable WHERE studentSubject LIKE '%' || :query || '%' OR studentYear LIKE '%' || :query || '%' OR studentName LIKE '%' || :query || '%' ORDER BY studentSubject")
+    fun getStudentsSortedBySubject(query: String) : Flow<List<LocalStudent>>
 
-    @Query("SELECT * FROM studentTable WHERE studentSubject LIKE :query OR studentYear LIKE :query OR studentName LIKE :query")
-    fun searchStudents(query: String) : Flow<List<LocalStudent>>
+    // Tutor CRUD operations
 
     @Insert(entity = Tutor::class, onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertTutor(tutor: Tutor)
 
     @Query("DELETE FROM tutor_table")
     suspend fun deleteTutor()
-
-    @Query("DELETE FROM studentTable")
-    suspend fun dropStudents()
 
     @Query("SELECT * FROM tutor_table")
     fun getTutor() : Flow<List<Tutor>>

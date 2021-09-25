@@ -5,26 +5,49 @@ import androidx.lifecycle.viewModelScope
 import com.example.tutortracking.data.common.models.UserResponse
 import com.example.tutortracking.data.localdata.models.LocalStudent
 import com.example.tutortracking.data.repository.TutorRepository
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.example.tutortracking.util.Result
+import com.example.tutortracking.util.SessionManager
+import com.example.tutortracking.util.SortOrder
 import com.example.tutortracking.util.doNamesOperations
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
 import java.util.*
 
 @HiltViewModel
-class StudentViewModel @Inject constructor(private val repository: TutorRepository) : ViewModel() {
+class StudentViewModel @Inject constructor(
+    @PublishedApi internal val repository: TutorRepository,
+    @PublishedApi internal val sessionManager: SessionManager) : ViewModel() {
+
     private val _addStudentState = MutableSharedFlow<Result<UserResponse>>()
     val addStudentState = _addStudentState.asSharedFlow()
     private val _updateStudentState = MutableSharedFlow<Result<UserResponse>>()
     val updateStudentState = _updateStudentState.asSharedFlow()
     private val _deleteStudentState = MutableSharedFlow<Result<UserResponse>>()
     val deleteStudentState = _deleteStudentState.asSharedFlow()
-    val studentsList = repository.getAllStudentsLocally()
+
+    //making mutable states of these two because these are going to change gradually and because they need an initial value
+    val searchQuery = MutableStateFlow("")
+    private val sortOrder = sessionManager.filterPreferences
+
+    @ExperimentalCoroutinesApi
+    //a flow that combines all the changes to happen to the previous flows and
+    //return a flow<list> of the students depending on the user filtering and search
+    // and combine function does the exact thing as it returns the changes to these flows together
+    // moving the flows into the pair to easily return them as one value
+    val studentsList = combine(
+        searchQuery,
+        sortOrder
+    ){searchQuery, sortOrder ->
+        Pair(searchQuery, sortOrder)
+    }.flatMapLatest { (searchQuery, sortOrder)->
+        repository.getAllStudentsLocally(searchQuery, sortOrder)
+    }
+
 
     fun addStudent(
         name: String,
@@ -68,15 +91,17 @@ class StudentViewModel @Inject constructor(private val repository: TutorReposito
         _deleteStudentState.emit(repository.deleteStudent(student))
     }
 
-    suspend fun syncData(
-        onFinish : (() -> Unit)? = null
+    suspend inline fun syncData(
+        crossinline onFinish : () -> Unit
     )
    {
        repository.sync()
-       withContext(Dispatchers.Main){onFinish?.invoke()}
+       withContext(Dispatchers.Main){onFinish()}
 
     }
 
-    fun getSearchedStudent(query: String) = repository.searchStudent("%$query%")
+    fun updatePreferences(sortingOrder: SortOrder) = viewModelScope.launch {
+        sessionManager.updateSortingOrder(sortingOrder)
+    }
 
 }
