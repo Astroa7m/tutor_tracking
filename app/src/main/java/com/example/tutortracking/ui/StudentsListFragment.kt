@@ -1,5 +1,9 @@
 package com.example.tutortracking.ui
 
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -7,6 +11,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -38,6 +43,8 @@ class StudentsListFragment : Fragment(R.layout.fragment_students_list), SearchVi
         get() = _binding!!
     private val tutorViewModel : TutorViewModel by activityViewModels()
     private val studentsViewModel : StudentViewModel by activityViewModels()
+    private val colorDrawable = ColorDrawable(Color.parseColor("#F37575"))
+    private lateinit var deleteIcon : Drawable
     private lateinit var adapter: StudentsAdapter
 
     override fun onResume() {
@@ -56,6 +63,7 @@ class StudentsListFragment : Fragment(R.layout.fragment_students_list), SearchVi
         setHasOptionsMenu(true)
         setUpRV()
         setList()
+        deleteIcon = ContextCompat.getDrawable(requireContext(),R.drawable.ic_delete)!!
         validateUser()
         subscribeToDeleteEvents()
         binding!!.swipeRefreshLayout.setOnRefreshListener {
@@ -141,6 +149,29 @@ class StudentsListFragment : Fragment(R.layout.fragment_students_list), SearchVi
                         }.show()
                 }
             }
+        }
+
+        override fun onChildDraw(
+            c: Canvas,
+            recyclerView: RecyclerView,
+            viewHolder: RecyclerView.ViewHolder,
+            dX: Float,
+            dY: Float,
+            actionState: Int,
+            isCurrentlyActive: Boolean
+        ) {
+            val itemView = viewHolder.itemView
+            val iconMargin = (itemView.height-deleteIcon.intrinsicHeight) / 2
+            if(dX<0){
+                colorDrawable.setBounds(itemView.left-dX.toInt(), itemView.top, itemView.right, itemView.bottom)
+                deleteIcon.setBounds(itemView.right-iconMargin-deleteIcon.intrinsicWidth, itemView.top+iconMargin, itemView.right-iconMargin-(dX.toInt()), itemView.bottom-iconMargin)
+            }else{
+                colorDrawable.setBounds(0,0,0,0)
+                deleteIcon.setBounds(0,0,0,0)
+            }
+            colorDrawable.draw(c)
+            deleteIcon.draw(c)
+            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
         }
     }
 

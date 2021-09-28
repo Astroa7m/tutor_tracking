@@ -104,16 +104,19 @@
             app:layout_constraintTop_toBottomOf="@+id/register_name_et" />
 
 
-        <com.google.android.material.chip.Chip
+        <Button
             android:id="@+id/register_register_chip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:backgroundTint="@color/small_items_color"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/button_bg"
             android:fontFamily="@font/stoke_light"
             android:text="Register"
+            android:textAllCaps="false"
             android:textColor="@color/my_greish"
-            android:textSize="18sp"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/register_modules_et"
             app:layout_constraintTop_toBottomOf="@+id/register_modules_et" />
 

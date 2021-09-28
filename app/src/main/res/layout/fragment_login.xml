@@ -44,14 +44,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/login_email_et" />
 
-    <com.google.android.material.chip.Chip
+    <Button
         android:id="@+id/login_login_chip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:layout_marginTop="8dp"
-        android:backgroundTint="@color/small_items_color"
-        android:text="login"
-        android:textSize="20sp"
+        android:text="Login"
+        android:textSize="14sp"
+        android:background="@drawable/button_bg"
+        android:fontFamily="@font/stoke_light"
+        android:textAllCaps="false"
+        android:textColor="@color/my_greish"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
