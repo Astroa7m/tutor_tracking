@@ -4,11 +4,10 @@
     <item
         android:id="@+id/add_student"
         android:icon="@drawable/ic_add"
-        android:iconTint="@color/white"
         android:title="Add student"
         app:showAsAction="always" />
     <item
-        android:icon="@drawable/ic_sort"
+        android:icon="@drawable/ic_sorting"
         android:title="Sort"
         app:showAsAction="always">
         <menu>

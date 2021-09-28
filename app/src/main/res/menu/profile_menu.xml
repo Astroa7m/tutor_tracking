@@ -2,7 +2,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <item android:id="@+id/done"
+        android:title="Apply update"
+        app:showAsAction="always"
+        android:visible="false"
+        android:icon="@drawable/ic_done"/>
+    <item android:id="@+id/edit"
+        android:title="Update Information"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_edit"/>
     <item android:id="@+id/logout"
-        android:title="logout"
+        android:title="Logout"
+        android:icon="@drawable/ic_logout"
         app:showAsAction="always"/>
 </menu>

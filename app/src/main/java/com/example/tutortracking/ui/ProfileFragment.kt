@@ -42,6 +42,8 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     private var hasBeenUpdated = false
     private lateinit var launcher: ActivityResultLauncher<Intent>
     private var imageUri: Uri? = null
+    private lateinit var done : MenuItem
+    private lateinit var edit : MenuItem
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -54,19 +56,15 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         setHasOptionsMenu(true)
         subscribeToTutorLogoutEvents()
         subscribeToTutorUpdateEvents()
-        updateInfoIfNeeded()
         setCurrentTutorInfo()
         (activity as MainActivity).hasSessionStarted = false
     }
 
-    private fun updateInfoIfNeeded() {
-        binding.profileUpdateChip.setOnClickListener {
+    private fun updateProfile() {
             if(!hasBeenUpdated){
                 binding.apply {
-                    profileUpdateChip.text = "Done"
                     disableOrEnableViews(!hasBeenUpdated,profileEmailEt, profileNameEt, profileModulesEt)
                     profilePasswordEt.isVisible = true
-                    profileUpdateChip.setChipBackgroundColorResource(R.color.synced)
                     profileImageView.setOnClickListener {
                         Intent(Intent.ACTION_PICK).also {
                             it.type = "image/*"
@@ -77,8 +75,6 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 hasBeenUpdated = true
             }else{
                 binding.apply {
-                    profileUpdateChip.text = "Update"
-                    profileUpdateChip.setChipBackgroundColorResource(R.color.my_greish)
                     disableOrEnableViews(!hasBeenUpdated,profileEmailEt, profileNameEt, profileModulesEt)
                     profileImageView.isClickable = false
                     profilePasswordEt.isVisible = false
@@ -90,7 +86,6 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 }
                 hasBeenUpdated = false
             }
-        }
     }
 
     private fun setCurrentTutorInfo() = viewLifecycleOwner.lifecycleScope.launch{
@@ -119,11 +114,24 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.profile_menu, menu)
+        done = menu.findItem(R.id.done)
+        edit = menu.findItem(R.id.edit)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(item.itemId==R.id.logout){
-            viewModel.logout()
+        when(item.itemId){
+            R.id.logout->viewModel.logout()
+            R.id.edit -> {
+                updateProfile()
+                edit.isVisible = !hasBeenUpdated
+                done.isVisible = hasBeenUpdated
+            }
+            R.id.done->{
+                updateProfile()
+                edit.isVisible = !hasBeenUpdated
+                done.isVisible = hasBeenUpdated
+            }
+
         }
         return super.onOptionsItemSelected(item)
     }

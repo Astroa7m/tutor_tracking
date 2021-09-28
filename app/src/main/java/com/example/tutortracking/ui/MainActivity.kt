@@ -32,7 +32,6 @@ class MainActivity : AppCompatActivity() {
         val appBarConfig = AppBarConfiguration
             .Builder(
                 R.id.profileFragment,
-                R.id.reviewsFragment,
                 R.id.studentsListFragment,
                 R.id.loginFragment
             )

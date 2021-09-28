@@ -49,11 +49,6 @@
             app:destination="@id/studentsListFragment" />
     </fragment>
     <fragment
-        android:id="@+id/reviewsFragment"
-        android:name="com.example.tutortracking.ui.ReviewsFragment"
-        android:label="fragment_reviews"
-        tools:layout="@layout/fragment_reviews" />
-    <fragment
         android:id="@+id/profileFragment"
         android:name="com.example.tutortracking.ui.ProfileFragment"
         android:label="Profile"
