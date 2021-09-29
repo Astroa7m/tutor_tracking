@@ -120,7 +120,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
-            R.id.logout->viewModel.logout()
+            R.id.logout-> viewModel.logout()
             R.id.edit -> {
                 updateProfile()
                 edit.isVisible = !hasBeenUpdated

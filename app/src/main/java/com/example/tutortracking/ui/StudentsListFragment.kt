@@ -50,7 +50,7 @@ class StudentsListFragment : Fragment(R.layout.fragment_students_list), SearchVi
     override fun onResume() {
         super.onResume()
         val hasSessionStarted = (activity as MainActivity).hasSessionStarted
-        if (hasSessionStarted && adapter.currentList.isNotEmpty()) {
+        if (hasSessionStarted) {
             binding!!.swipeRefreshLayout.isRefreshing = true
             syncData()
         }
