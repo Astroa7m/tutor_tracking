@@ -14,3 +14,11 @@ fun String.doNamesOperations() : String{
             }
         }.joinToString(separator = " ")
 }
+
+fun String.capitalize()=
+    this.replaceFirstChar { firstChar->
+        if (firstChar.isLowerCase())
+            firstChar.titlecase(Locale.getDefault())
+        else
+            firstChar.toString()
+    }

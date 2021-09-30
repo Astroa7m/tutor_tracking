@@ -15,6 +15,7 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -22,12 +23,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.tutortracking.R
 import com.example.tutortracking.databinding.FragmentProfileBinding
-import com.example.tutortracking.util.Result
-import com.example.tutortracking.util.decode
-import com.example.tutortracking.util.getImageBytes
-import com.example.tutortracking.util.getImageString
+import com.example.tutortracking.util.*
 import com.example.tutortracking.viewmodels.StudentViewModel
 import com.example.tutortracking.viewmodels.TutorViewModel
+import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -44,6 +43,9 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     private var imageUri: Uri? = null
     private lateinit var done : MenuItem
     private lateinit var edit : MenuItem
+    private var tutorModules = mutableListOf<String>()
+    private var hasChipsBeenSet = false
+
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -58,13 +60,43 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         subscribeToTutorUpdateEvents()
         setCurrentTutorInfo()
         (activity as MainActivity).hasSessionStarted = false
+
+        binding.profileAddChipsButton.setOnClickListener {
+            if(binding.profileModulesEt.text.toString().isNotEmpty())
+                addChip(binding.profileModulesEt.text.toString())
+        }
+    }
+
+
+    private fun addChip(chipText: String) {
+        binding.profileModulesEt.setText("")
+        val chip = Chip(requireContext())
+        chip.text = chipText.capitalize()
+        chip.isCloseIconVisible = true
+        chip.setOnCloseIconClickListener {
+            binding.profileChipGroup.removeView(chip)
+            tutorModules.remove(chip.text)
+        }
+        binding.profileChipGroup.addView(chip)
+        tutorModules.add(chipText.capitalize())
     }
 
     private fun updateProfile() {
             if(!hasBeenUpdated){
+
                 binding.apply {
-                    disableOrEnableViews(!hasBeenUpdated,profileEmailEt, profileNameEt, profileModulesEt)
+                    val chipsCount = binding.profileChipGroup.childCount
+                    repeat(chipsCount) { index ->
+                        val chip = (profileChipGroup[index] as Chip)
+                        chip.isCloseIconVisible = true
+                        chip.setOnCloseIconClickListener {
+                            binding.profileChipGroup.removeView(chip)
+                            tutorModules.remove(chip.text)
+                        }
+                    }
+                    disableOrEnableViews(!hasBeenUpdated,profileEmailEt, profileNameEt)
                     profilePasswordEt.isVisible = true
+                    profileModulesEt.isVisible = true
                     profileImageView.setOnClickListener {
                         Intent(Intent.ACTION_PICK).also {
                             it.type = "image/*"
@@ -75,14 +107,19 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 hasBeenUpdated = true
             }else{
                 binding.apply {
-                    disableOrEnableViews(!hasBeenUpdated,profileEmailEt, profileNameEt, profileModulesEt)
+                    val chipsCount = binding.profileChipGroup.childCount
+                    repeat(chipsCount) { index ->
+                        val chip = (profileChipGroup[index] as Chip)
+                        chip.isCloseIconVisible = false
+                    }
+                    disableOrEnableViews(!hasBeenUpdated,profileEmailEt, profileNameEt)
                     profileImageView.isClickable = false
                     profilePasswordEt.isVisible = false
-                    viewModel.update(profileEmailEt.text.toString(),
-                    profilePasswordEt.text.toString(),
-                    profileNameEt.text.toString(),
-                    profileModulesEt.text.toString(),
-                        if(imageUri!=null) getImageBytes(imageUri, requireContext()) else null)
+                    profileModulesEt.isVisible = false
+                    val email = profileEmailEt.text.toString()
+                    val password = profilePasswordEt.text.toString()
+                    val name = profileNameEt.text.toString()
+                    viewModel.update(email, password, name, tutorModules, if(imageUri!=null) getImageBytes(imageUri, requireContext()) else null)
                 }
                 hasBeenUpdated = false
             }
@@ -101,8 +138,23 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 binding.profileNameEt.setText(currentTutor[0].name)
                 binding.profileEmailEt.setText(currentTutor[0].email)
                 binding.profileStudentCount.text = getString(R.string.student_count, viewModel.getStudentsCount())
-                binding.profileModulesEt.setText(currentTutor[0].modules.joinToString(separator = ","))
+                currentTutor[0].modules.forEach { module->
+                    tutorModules.add(module.capitalize())
+                }
+                if(!hasChipsBeenSet){
+                    setChips()
+                    hasChipsBeenSet = true
+                }
             }
+        }
+    }
+
+    private fun setChips() {
+        tutorModules.forEach { module ->
+            val chip = Chip(requireContext())
+            chip.text = module.capitalize()
+            chip.isCloseIconVisible = false
+            binding.profileChipGroup.addView(chip)
         }
     }
 
@@ -160,6 +212,10 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 is Result.Error ->{
                     hideProgressBar()
                     Toast.makeText(requireContext(), response.message, Toast.LENGTH_LONG).show()
+                    findNavController().run {
+                        popBackStack()
+                        navigate(R.id.profileFragment)
+                    }
                 }
                 is Result.Success->{
                     hideProgressBar()

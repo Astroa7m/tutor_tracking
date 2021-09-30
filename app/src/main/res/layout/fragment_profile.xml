@@ -15,10 +15,10 @@
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_marginTop="16dp"
-            app:civ_border_color="#5A6870"
-            app:civ_border_width="2dp"
             android:background="@drawable/image_background"
             android:clickable="false"
+            app:civ_border_color="#5A6870"
+            app:civ_border_width="2dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -32,11 +32,11 @@
             android:layout_marginTop="24dp"
             android:layout_marginEnd="32dp"
             android:ems="10"
-            android:visibility="gone"
             android:fontFamily="@font/stoke_light"
             android:hint="Tutor's new password"
             android:inputType="textPassword"
             android:paddingLeft="8dp"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -50,15 +50,27 @@
             android:layout_marginTop="24dp"
             android:layout_marginEnd="32dp"
             android:ems="10"
-            android:enabled="false"
             android:fontFamily="@font/stoke_light"
-            android:hint="Tutor's Modules (separate by commas)"
+            android:hint="Tutor's Modules"
             android:inputType="textCapWords"
             android:paddingLeft="8dp"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/profile_password_et" />
+            app:layout_constraintTop_toBottomOf="@+id/profile_chip_group" />
+
+        <Button
+            android:id="@+id/profile_add_chips_button"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/add_button_bg"
+            android:text="Add"
+            android:textColor="@color/my_greish"
+            app:layout_constraintBottom_toBottomOf="@+id/profile_modules_et"
+            app:layout_constraintEnd_toEndOf="@+id/profile_modules_et"
+            app:layout_constraintTop_toTopOf="@+id/profile_modules_et" />
 
         <EditText
             android:id="@+id/profile_name_et"
@@ -100,24 +112,51 @@
             android:id="@+id/profile_student_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
             android:fontFamily="@font/convergence"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/profile_modules_et"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/profile_modules_et"
-            tools:text="students count: 20" />
+            tools:text="Students count: 20" />
+
+
         <ProgressBar
             android:id="@+id/profile_progressbar"
             style="?android:attr/progressBarStyle"
             android:layout_width="wrap_content"
-            android:visibility="gone"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/profile_chip_group"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="32dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profile_modules_i_teach_text">
+
+        </com.google.android.material.chip.ChipGroup>
+
+        <TextView
+            android:id="@+id/profile_modules_i_teach_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="24dp"
+            android:fontFamily="@font/convergence"
+            android:text="Modules I teach:"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profile_password_et" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

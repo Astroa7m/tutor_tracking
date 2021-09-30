@@ -17,13 +17,13 @@ import java.util.*
 
 fun areFieldsEmpty(
     email: String,
-    password: String,
+    password: String?=null,
     name:String?=null,
-    modules: String?=null
+    modules: List<String>?=null
 )
 = name?.isEmpty()?: false
         || email.isEmpty()
-        || password.isEmpty()
+        || password?.isEmpty()?: false
         || modules?.isEmpty()?: false
 
 fun getImageBytes(imageUri: Uri?, context: Context): ByteArray {

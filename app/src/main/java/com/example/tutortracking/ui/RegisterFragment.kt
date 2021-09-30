@@ -18,6 +18,7 @@ import com.example.tutortracking.R
 import com.example.tutortracking.databinding.FragmentRegisterBinding
 import com.example.tutortracking.util.*
 import com.example.tutortracking.viewmodels.TutorViewModel
+import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -32,6 +33,7 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
     private val viewModel : TutorViewModel by activityViewModels()
     private lateinit var launcher: ActivityResultLauncher<Intent>
     private var imageUri: Uri? = null
+    private var tutorModules = mutableListOf<String>()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -44,8 +46,13 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
 
         subscribeToTutorRegisterEvents()
 
-        binding.registerRegisterChip.setOnClickListener{
+        binding.registerRegisterButton.setOnClickListener{
             sendUserInput()
+        }
+
+        binding.registerAddChipsButton.setOnClickListener{
+            if(binding.registerModulesEt.text.toString().isNotEmpty())
+                addChip(binding.registerModulesEt.text.toString())
         }
 
         binding.registerImageView.setOnClickListener {
@@ -55,6 +62,22 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
             }
         }
 
+    }
+
+    private fun addChip(chipText: String) {
+        if(!binding.registerChipGroup.isVisible)
+            binding.registerChipGroup.isVisible = true
+        val chip = Chip(requireContext())
+        chip.text = chipText.capitalize()
+        chip.isCloseIconVisible = true
+        chip.setOnCloseIconClickListener {
+            binding.registerChipGroup.removeView(chip)
+            tutorModules.remove(chip.text)
+            if(tutorModules.size==0)
+                binding.registerChipGroup.isVisible = false
+        }
+        binding.registerChipGroup.addView(chip)
+        tutorModules.add(chipText.capitalize())
     }
 
     private fun subscribeToTutorRegisterEvents() = viewLifecycleOwner.lifecycleScope.launch {
@@ -98,9 +121,8 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
         val email = binding.registerEmailEt.text.toString()
         val name = binding.registerNameEt.text.toString()
         val password = binding.registerPasswordEt.text.toString()
-        val modules = binding.registerModulesEt.text.toString()
         val byteArrayPic = if(imageUri!=null) getImageBytes(imageUri, requireContext()) else null
-        viewModel.register(email, password, name, modules, byteArrayPic)
+        viewModel.register(email, password, name, tutorModules, byteArrayPic)
     }
 
 

@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.example.tutortracking.util.Result
 import com.example.tutortracking.util.areFieldsEmpty
+import com.example.tutortracking.util.capitalize
 import com.example.tutortracking.util.doNamesOperations
 import kotlinx.coroutines.flow.*
 import java.util.*
@@ -39,28 +40,19 @@ class TutorViewModel @Inject constructor(@PublishedApi internal val repository: 
         email: String,
         password: String,
         name: String,
-        modules: String,
+        modules: List<String>,
         profilePic: ByteArray?
     ) = viewModelScope.launch {
         _tutorRegisterState.emit(Result.Loading())
-        if(areFieldsEmpty(email.trim(), password.trim(), name.trim(), modules.trim())){
+        if(areFieldsEmpty(email.trim(), password.trim(), name.trim(), modules)){
             _tutorRegisterState.emit(Result.Error("Some fields might be empty"))
             return@launch
-        }
-        val modulesList = modules.split(",").map { module->
-            module.trim()
-            .replaceFirstChar { firstChar->
-                if (firstChar.isLowerCase())
-                    firstChar.titlecase(Locale.getDefault())
-                else
-                    firstChar.toString()
-            }
         }
         val tutor = Register(
             email.trim().lowercase(),
             password.trim(),
             name.doNamesOperations(),
-            modulesList,
+            modules,
             profilePic)
         val result = repository.register(tutor)
         _tutorRegisterState.emit(result)
@@ -83,29 +75,22 @@ class TutorViewModel @Inject constructor(@PublishedApi internal val repository: 
         email: String,
         password: String,
         name: String,
-        modules: String,
+        modules: List<String>,
         profilePic: ByteArray?
     ) = viewModelScope.launch {
-        val modulesList = modules.split(",").map { module->
-            module.trim()
-                .replaceFirstChar { firstChar->
-                    if (firstChar.isLowerCase())
-                        firstChar.titlecase(Locale.getDefault())
-                    else
-                        firstChar.toString()
-                }
-        }
         _tutorUpdateState.emit(Result.Loading())
-        if(name.isEmpty())
-            _tutorLogoutState.emit(Result.Error("Name cannot be empty"))
-        val tutor = Update(
+        if(areFieldsEmpty(email.trim(), name = name.trim(), modules =  modules)){
+            _tutorUpdateState.emit(Result.Error("Some fields might be empty"))
+            return@launch
+        }
+       val tutor = Update(
             email.trim().lowercase(),
             if(password.isEmpty())
                 null
             else
                 password.trim(),
             name.doNamesOperations(),
-            modulesList,
+            modules,
             profilePic)
         _tutorUpdateState.emit(repository.update(tutor))
     }
