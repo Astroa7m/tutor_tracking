@@ -26,14 +26,15 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <EditText
-        android:id="@+id/add_students_dialog_subject"
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/add_students_dialog_subject_chip_group"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:ems="10"
+        app:singleSelection="true"
         android:hint="Student's subject"
         android:inputType="textCapSentences"
         app:layout_constraintBottom_toTopOf="@+id/add_students_dialog_fab"
@@ -51,7 +52,7 @@
         android:ems="10"
         android:hint="Student's year"
         android:inputType="numberSigned"
-        app:layout_constraintBottom_toTopOf="@+id/add_students_dialog_subject"
+        app:layout_constraintBottom_toTopOf="@+id/add_students_dialog_subject_chip_group"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
@@ -73,14 +74,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/add_students_dialog_image" />
 
-    <TextView
+    <ImageView
         android:id="@+id/add_students_dialog_edit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:text="Edit"
-        android:textColor="#9C27B0"
+        android:src="@drawable/ic_edit"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -89,13 +90,14 @@
         android:id="@+id/add_students_dialog_chip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:backgroundTint="@color/design_default_color_secondary"
+        android:layout_marginStart="4dp"
+        android:backgroundTint="@color/choose_image_button_color"
         android:text="Choose an image"
-        android:textColor="@color/white"
+        android:textColor="@color/buttonTextColor"
         app:layout_constraintBottom_toBottomOf="@+id/add_students_dialog_image"
         app:layout_constraintStart_toEndOf="@+id/add_students_dialog_image"
-        app:layout_constraintTop_toTopOf="@+id/add_students_dialog_image" />
+        app:layout_constraintTop_toTopOf="@+id/add_students_dialog_image"
+        app:layout_constraintVertical_bias="0.529" />
 
     <ProgressBar
         android:id="@+id/add_students_dialog_progressbar"

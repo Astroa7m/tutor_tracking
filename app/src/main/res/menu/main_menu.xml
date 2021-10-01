@@ -5,11 +5,11 @@
         android:id="@+id/add_student"
         android:icon="@drawable/ic_add"
         android:title="Add student"
-        app:showAsAction="always" />
+        app:showAsAction="always"/>
     <item
         android:icon="@drawable/ic_sorting"
         android:title="Sort"
-        app:showAsAction="always">
+        app:showAsAction="ifRoom">
         <menu>
             <item
                 android:id="@+id/by_name"
@@ -24,9 +24,22 @@
     </item>
     <item
         android:id="@+id/search_student"
-        android:iconTint="@color/white"
         android:title="Search student"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
-        app:showAsAction="always" />
+        app:showAsAction="always"/>
+    <item android:title="Theme"
+        app:showAsAction="never">
+        <menu>
+            <item
+                android:id="@+id/light_mode"
+                android:title="Light mode" />
+            <item
+                android:id="@+id/dark_mode"
+                android:title="Dark mode" />
+            <item
+                android:id="@+id/system_default"
+                android:title="System default" />
+        </menu>
+    </item>
 
 </menu>

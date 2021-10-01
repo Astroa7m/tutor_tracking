@@ -56,6 +56,9 @@ interface StudentDao {
     @Query("SELECT * FROM tutor_table")
     fun getTutor() : Flow<List<Tutor>>
 
+    @Query("SELECT modules FROM tutor_table LIMIT 1")
+    suspend fun getTutorModules(): String
+
     //Local CRUD operation
 
     //locally updated student

@@ -13,4 +13,5 @@ object Constants {
     const val TUTOR_ID_KEY = "TUTOR_ID_KEY"
     const val TOKEN_KEY = "TOKEN"
     const val SORT_ORDER = "SORT_ORDER"
+    const val THEME_MODE_KEY = "THEME_MODE"
 }

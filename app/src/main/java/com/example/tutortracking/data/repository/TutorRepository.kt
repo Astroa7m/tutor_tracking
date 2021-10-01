@@ -38,6 +38,8 @@ interface TutorRepository {
     suspend fun getAllLocallyUpdated() : List<LocallyUpdatedStudent>
     suspend fun getAllLocallyAdded() : List<LocallyAddedStudent>
     suspend fun getAllStudentsAsList() : List<LocalStudent>
+    suspend fun getTutorModules() : String
+    suspend fun updateTheme(themeInt: Int)
     suspend fun sync()
 
 }

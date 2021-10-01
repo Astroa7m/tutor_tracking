@@ -65,9 +65,9 @@
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_marginBottom="8dp"
-            android:background="@drawable/add_button_bg"
             android:text="Add"
-            android:textColor="@color/my_greish"
+            android:background="@android:color/transparent"
+            android:textColor="@color/buttonTextColor"
             app:layout_constraintBottom_toBottomOf="@+id/profile_modules_et"
             app:layout_constraintEnd_toEndOf="@+id/profile_modules_et"
             app:layout_constraintTop_toTopOf="@+id/profile_modules_et" />

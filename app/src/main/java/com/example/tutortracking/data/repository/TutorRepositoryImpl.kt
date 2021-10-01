@@ -294,5 +294,10 @@ class TutorRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getTutorModules() = studentDao.getTutorModules()
+    override suspend fun updateTheme(themeInt: Int) {
+        sessionManager.updateThemeMode(themeInt)
+    }
+
     override suspend fun getAllStudentsAsList() = studentDao.getAllStudentsForAsList()
 }

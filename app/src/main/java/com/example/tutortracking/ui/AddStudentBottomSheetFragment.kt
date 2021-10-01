@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.view.children
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -25,6 +26,7 @@ import com.example.tutortracking.util.getImageBytes
 import com.example.tutortracking.util.getImageString
 import com.example.tutortracking.viewmodels.StudentViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -59,6 +61,7 @@ class AddStudentBottomSheetFragment : BottomSheetDialogFragment() {
                 is Result.Error ->{
                     hideProgressBar()
                     Toast.makeText(requireContext(), response.message, Toast.LENGTH_LONG).show()
+                    findNavController().popBackStack()
                 }
                 is Result.Success->{
                     hideProgressBar()
@@ -82,14 +85,38 @@ class AddStudentBottomSheetFragment : BottomSheetDialogFragment() {
         setFields()
         binding.addStudentsDialogEdit.setOnClickListener {
             doEnabling()
+            viewLifecycleOwner.lifecycleScope.launch { addOtherChips() }
         }
-        binding.addStudentsDialogFab.setOnClickListener { updateStudent() }
+        binding.addStudentsDialogFab.setOnClickListener {
+            if(binding.addStudentsDialogSubjectChipGroup.children.toList()
+                    .any { (it as Chip).isChecked }
+            )
+            updateStudent()
+            else
+                Toast.makeText(requireContext(), "Please choose a subject to proceed", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private suspend fun addOtherChips()  {
+        val listOfModules = viewModel.getStudentsTutorModules()
+        listOfModules.forEach {module->
+            module.takeIf {thisModule->
+                thisModule!=args.student?.studentSubject
+            }?.let {
+                binding.addStudentsDialogSubjectChipGroup.addView(Chip(requireContext()).apply {
+                    text = it
+                    isCheckable = true
+                })
+            }
+
+        }
+
     }
 
     private fun updateStudent() {
         val name = binding.addStudentsDialogName.text.toString()
         val year = binding.addStudentsDialogYear.text.toString()
-        val subject = binding.addStudentsDialogSubject.text.toString()
+        val subject = (binding.addStudentsDialogSubjectChipGroup.children.toList().filter { (it as Chip).isChecked }[0] as Chip).text.toString()
         val imageByteArray = when{
             args.student!!.studentPic!=null && imageUri!=null -> getImageBytes(imageUri, requireContext())
             args.student!!.studentPic!=null -> args.student!!.studentPic
@@ -104,7 +131,10 @@ class AddStudentBottomSheetFragment : BottomSheetDialogFragment() {
         binding.apply {
             addStudentsDialogName.setText(args.student!!.studentName)
             addStudentsDialogYear.setText(args.student!!.studentYear.toString())
-            addStudentsDialogSubject.setText(args.student!!.studentSubject)
+            addStudentsDialogSubjectChipGroup.addView(Chip(requireContext()).apply {
+                text = args.student!!.studentSubject
+                isClickable = false
+            })
             addStudentsDialogImage.apply {
                 when{
                     args.student!!.studentPic != null-> setImageBitmap(decode(getImageString(args.student!!.studentPic)))
@@ -117,16 +147,21 @@ class AddStudentBottomSheetFragment : BottomSheetDialogFragment() {
 
     private fun doEnabling() {
         binding.apply {
-            disableOrEnableViews(true, addStudentsDialogYear, addStudentsDialogSubject, addStudentsDialogName)
+            disableOrEnableViews(true, addStudentsDialogYear, addStudentsDialogName)
             addStudentsDialogEdit.isVisible = false
             addStudentsDialogFab.isVisible = true
             addStudentsDialogChip.isVisible = true
+            (addStudentsDialogSubjectChipGroup.getChildAt(0) as Chip).apply {
+                isCheckable = true
+                isClickable = true
+                isChecked = true
+            }
         }
     }
 
     private fun doDisabling() {
         binding.apply {
-            disableOrEnableViews(false, addStudentsDialogYear, addStudentsDialogSubject, addStudentsDialogName)
+            disableOrEnableViews(false, addStudentsDialogYear, addStudentsDialogName)
             addStudentsDialogEdit.isVisible = true
             addStudentsDialogFab.isVisible = false
             addStudentsDialogChip.isVisible = false
@@ -140,6 +175,7 @@ class AddStudentBottomSheetFragment : BottomSheetDialogFragment() {
     }
 
     private fun addNewStudent() {
+        viewLifecycleOwner.lifecycleScope.launch { addOtherChips() }
         binding.addStudentsDialogFab.setOnClickListener { addStudent() }
         binding.addStudentsDialogEdit.isVisible = false
     }
@@ -187,9 +223,19 @@ class AddStudentBottomSheetFragment : BottomSheetDialogFragment() {
     }
 
     private fun addStudent(){
+        if(!(binding.addStudentsDialogSubjectChipGroup.children.toList()
+                .any { (it as Chip).isChecked }
+        )) {
+            Toast.makeText(
+                requireContext(),
+                "Please choose a subject to proceed",
+                Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
         val name = binding.addStudentsDialogName.text.toString()
         val year = binding.addStudentsDialogYear.text.toString()
-        val subject = binding.addStudentsDialogSubject.text.toString()
+        val subject = (binding.addStudentsDialogSubjectChipGroup.children.toList().filter { (it as Chip).isChecked }[0] as Chip).text.toString()
         val imageByteArray = if(imageUri!=null) getImageBytes(imageUri, requireContext()) else null
         viewModel.addStudent(name, year, subject, imageByteArray)
     }

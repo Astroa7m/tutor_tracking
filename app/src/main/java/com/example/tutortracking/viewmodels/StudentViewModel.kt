@@ -100,8 +100,10 @@ class StudentViewModel @Inject constructor(
 
     }
 
-    fun updatePreferences(sortingOrder: SortOrder) = viewModelScope.launch {
+    fun updateSortOrderPreferences(sortingOrder: SortOrder) = viewModelScope.launch {
         sessionManager.updateSortingOrder(sortingOrder)
     }
+
+    suspend fun getStudentsTutorModules() = repository.getTutorModules().split(",")
 
 }

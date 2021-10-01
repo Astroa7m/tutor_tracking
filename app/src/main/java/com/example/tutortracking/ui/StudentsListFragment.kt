@@ -10,6 +10,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -17,9 +18,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tutortracking.R
 import com.example.tutortracking.adapters.StudentsAdapter
@@ -43,23 +42,21 @@ class StudentsListFragment : Fragment(R.layout.fragment_students_list), SearchVi
         get() = _binding!!
     private val tutorViewModel : TutorViewModel by activityViewModels()
     private val studentsViewModel : StudentViewModel by activityViewModels()
-    private val colorDrawable = ColorDrawable(Color.parseColor("#F37575"))
+    private val colorDrawable = ColorDrawable(Color.parseColor("#BD4545"))
     private lateinit var deleteIcon : Drawable
     private lateinit var adapter: StudentsAdapter
-
-    override fun onResume() {
-        super.onResume()
-        val hasSessionStarted = (activity as MainActivity).hasSessionStarted
-        if (hasSessionStarted) {
-            binding!!.swipeRefreshLayout.isRefreshing = true
-            syncData()
-        }
-    }
 
     @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentStudentsListBinding.bind(view)
+
+        val hasSessionStarted = (activity as MainActivity).hasSessionStarted
+        if (hasSessionStarted) {
+            binding!!.swipeRefreshLayout.isRefreshing = true
+            syncData()
+        }
+
         setHasOptionsMenu(true)
         setUpRV()
         setList()
@@ -107,12 +104,21 @@ class StudentsListFragment : Fragment(R.layout.fragment_students_list), SearchVi
             R.id.by_name -> sortBy(SortOrder.BY_NAME)
             R.id.by_year -> sortBy(SortOrder.BY_YEAR)
             R.id.by_subject -> sortBy(SortOrder.BY_SUBJECT)
+            R.id.dark_mode -> setTheme(AppCompatDelegate.MODE_NIGHT_YES)
+            R.id.light_mode -> setTheme(AppCompatDelegate.MODE_NIGHT_NO)
+            R.id.system_default -> setTheme(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+
         }
         return super.onOptionsItemSelected(item)
     }
 
+    private fun setTheme(themeInt: Int) {
+        tutorViewModel.updateThemePreferences(themeInt)
+        AppCompatDelegate.setDefaultNightMode(themeInt)
+    }
+
     private fun sortBy(sortOrder: SortOrder) {
-        studentsViewModel.updatePreferences(sortOrder)
+        studentsViewModel.updateSortOrderPreferences(sortOrder)
     }
 
     private fun moveToFirst() {

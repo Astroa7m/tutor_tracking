@@ -9,7 +9,11 @@
     <color name="white">#FFFFFFFF</color>
     <color name="small_items_color">#BDD3DD</color>
     <color name="my_greish">#535353</color>
-    <color name="fragments_background">#93BFD3</color>
     <color name="not_synced">#F37575</color>
     <color name="synced">#9CF188</color>
+    <color name="pColor">#b0bec5</color>
+    <color name="bottom_nav_bg">#b0bec5</color>
+    <color name="choose_image_button_color">#b0bec5</color>
+    <color name="buttonTextColor">#3E4B52</color>
+
 </resources>

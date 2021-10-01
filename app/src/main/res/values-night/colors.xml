@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="not_synced">#BD4545</color>
+    <color name="synced">#3C9128</color>
+    <color name="bottom_nav_bg">#00000000</color>
+    <color name="choose_image_button_color">@color/my_greish</color>
+    <color name="buttonTextColor">@color/white</color>
+</resources>

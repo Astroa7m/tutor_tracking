@@ -2,6 +2,7 @@ package com.example.tutortracking.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
@@ -20,11 +21,15 @@ import kotlin.properties.Delegates
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    var hasSessionStarted by Delegates.notNull<Boolean>()
+    var hasSessionStarted = false
+    @Inject
+    lateinit var sessionManager: SessionManager
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        lifecycleScope.launchWhenStarted { AppCompatDelegate.setDefaultNightMode(sessionManager.getThemeMode()) }
 
         hasSessionStarted = true
 

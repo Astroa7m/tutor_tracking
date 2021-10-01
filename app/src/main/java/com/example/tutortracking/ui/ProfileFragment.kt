@@ -3,8 +3,6 @@ package com.example.tutortracking.ui
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.res.ColorStateList
-import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
@@ -14,7 +12,6 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
 import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -24,7 +21,6 @@ import androidx.navigation.fragment.findNavController
 import com.example.tutortracking.R
 import com.example.tutortracking.databinding.FragmentProfileBinding
 import com.example.tutortracking.util.*
-import com.example.tutortracking.viewmodels.StudentViewModel
 import com.example.tutortracking.viewmodels.TutorViewModel
 import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
@@ -70,15 +66,18 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
     private fun addChip(chipText: String) {
         binding.profileModulesEt.setText("")
-        val chip = Chip(requireContext())
-        chip.text = chipText.capitalize()
-        chip.isCloseIconVisible = true
-        chip.setOnCloseIconClickListener {
-            binding.profileChipGroup.removeView(chip)
-            tutorModules.remove(chip.text)
+        Chip(requireContext()).apply {
+            text = chipText.capitalize()
+            isCloseIconVisible = true
+            isClickable = false
+            isFocusable = false
+            setOnCloseIconClickListener {
+                binding.profileChipGroup.removeView(this)
+                tutorModules.remove(this.text)
+            }
+            binding.profileChipGroup.addView(this)
+            tutorModules.add(chipText.capitalize())
         }
-        binding.profileChipGroup.addView(chip)
-        tutorModules.add(chipText.capitalize())
     }
 
     private fun updateProfile() {
@@ -87,11 +86,14 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 binding.apply {
                     val chipsCount = binding.profileChipGroup.childCount
                     repeat(chipsCount) { index ->
-                        val chip = (profileChipGroup[index] as Chip)
-                        chip.isCloseIconVisible = true
-                        chip.setOnCloseIconClickListener {
-                            binding.profileChipGroup.removeView(chip)
-                            tutorModules.remove(chip.text)
+                        (profileChipGroup[index] as Chip).apply {
+                            isClickable = false
+                            isCloseIconVisible = true
+                            isFocusable = false
+                            setOnCloseIconClickListener {
+                                binding.profileChipGroup.removeView(this)
+                                tutorModules.remove(this.text)
+                            }
                         }
                     }
                     disableOrEnableViews(!hasBeenUpdated,profileEmailEt, profileNameEt)
@@ -109,8 +111,11 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 binding.apply {
                     val chipsCount = binding.profileChipGroup.childCount
                     repeat(chipsCount) { index ->
-                        val chip = (profileChipGroup[index] as Chip)
-                        chip.isCloseIconVisible = false
+                        (profileChipGroup[index] as Chip).apply {
+                            isClickable = false
+                            isCloseIconVisible = false
+                            isFocusable = false
+                        }
                     }
                     disableOrEnableViews(!hasBeenUpdated,profileEmailEt, profileNameEt)
                     profileImageView.isClickable = false
@@ -151,10 +156,14 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
     private fun setChips() {
         tutorModules.forEach { module ->
-            val chip = Chip(requireContext())
-            chip.text = module.capitalize()
-            chip.isCloseIconVisible = false
-            binding.profileChipGroup.addView(chip)
+            Chip(requireContext()).apply {
+                text = module.capitalize()
+                isCloseIconVisible = false
+                isClickable = false
+                isFocusable = false
+                binding.profileChipGroup.addView(this)
+            }
+
         }
     }
 

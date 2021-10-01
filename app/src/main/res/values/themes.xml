@@ -14,4 +14,10 @@
         <!-- Customize your theme here. -->
         <item name="android:textColorPrimary">#5A6870</item>
     </style>
+
+    <style name="ButtonStyle" parent="TextAppearance.MaterialComponents.Button">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:textColor">@color/buttonTextColor</item>
+    </style>
+
 </resources>

@@ -107,9 +107,12 @@ class TutorViewModel @Inject constructor(@PublishedApi internal val repository: 
         return repository.getAllStudentsAsList().size
     }
 
+    fun updateThemePreferences(themeInt: Int) = viewModelScope.launch {
+            repository.updateTheme(themeInt)
+    }
+
     fun logout() = viewModelScope.launch {
         _tutorLogoutState.emit(Result.Loading())
         _tutorLogoutState.emit(repository.logout())
     }
-
 }

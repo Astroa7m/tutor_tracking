@@ -86,7 +86,6 @@
             android:fontFamily="@font/convergence"
             android:gravity="center_vertical"
             android:text="not synced"
-            android:textColor="@color/white"
             android:textSize="8sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
