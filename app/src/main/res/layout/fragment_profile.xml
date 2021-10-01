@@ -121,7 +121,6 @@
             app:layout_constraintTop_toBottomOf="@+id/profile_modules_et"
             tools:text="Students count: 20" />
 
-
         <ProgressBar
             android:id="@+id/profile_progressbar"
             style="?android:attr/progressBarStyle"
@@ -134,6 +133,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/profile_chip_group"
             android:layout_width="0dp"
@@ -142,10 +142,9 @@
             android:layout_marginTop="24dp"
             android:layout_marginEnd="32dp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/profile_modules_i_teach_text">
-
-        </com.google.android.material.chip.ChipGroup>
+            app:layout_constraintTop_toBottomOf="@+id/profile_modules_i_teach_text" />
 
         <TextView
             android:id="@+id/profile_modules_i_teach_text"

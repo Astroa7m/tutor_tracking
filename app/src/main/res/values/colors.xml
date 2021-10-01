@@ -15,5 +15,6 @@
     <color name="bottom_nav_bg">#b0bec5</color>
     <color name="choose_image_button_color">#b0bec5</color>
     <color name="buttonTextColor">#3E4B52</color>
+    <color name="fab_button_color_background">#b0bec5</color>
 
 </resources>

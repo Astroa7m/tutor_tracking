@@ -63,7 +63,6 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         }
     }
 
-
     private fun addChip(chipText: String) {
         binding.profileModulesEt.setText("")
         Chip(requireContext()).apply {

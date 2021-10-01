@@ -22,26 +22,39 @@
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="24dp"
         android:clickable="true"
+        app:backgroundTint="@color/fab_button_color_background"
         android:src="@drawable/ic_add_user"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <com.google.android.material.chip.ChipGroup
-        android:id="@+id/add_students_dialog_subject_chip_group"
-        android:layout_width="0dp"
+    <TextView
+        android:id="@+id/profile_choose_a_subject_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="16dp"
+        android:text="Choose a subject"
+        app:layout_constraintBottom_toTopOf="@+id/add_students_dialog_subject_chip_group_parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <HorizontalScrollView
+        android:id="@+id/add_students_dialog_subject_chip_group_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:ems="10"
-        app:singleSelection="true"
-        android:hint="Student's subject"
-        android:inputType="textCapSentences"
         app:layout_constraintBottom_toTopOf="@+id/add_students_dialog_fab"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.547"
-        app:layout_constraintStart_toStartOf="parent" />
-
+        app:layout_constraintStart_toStartOf="parent">
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/add_students_dialog_subject_chip_group"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:singleSelection="true"
+        app:singleLine="true"/>
+    </HorizontalScrollView>
     <EditText
         android:id="@+id/add_students_dialog_year"
         android:layout_width="0dp"
@@ -52,7 +65,7 @@
         android:ems="10"
         android:hint="Student's year"
         android:inputType="numberSigned"
-        app:layout_constraintBottom_toTopOf="@+id/add_students_dialog_subject_chip_group"
+        app:layout_constraintBottom_toTopOf="@+id/profile_choose_a_subject_textview"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
@@ -80,8 +93,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:text="Edit"
         android:src="@drawable/ic_edit"
+        android:text="Edit"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
