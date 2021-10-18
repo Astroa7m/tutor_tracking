@@ -26,6 +26,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var sessionManager: SessionManager
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setTheme(R.style.Theme_TutorTracking)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 

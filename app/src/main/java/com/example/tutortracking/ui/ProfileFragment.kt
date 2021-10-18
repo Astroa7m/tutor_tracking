@@ -5,10 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -29,10 +26,9 @@ import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
-class ProfileFragment : Fragment(R.layout.fragment_profile) {
+class ProfileFragment : Fragment() {
     private var _binding: FragmentProfileBinding? = null
-    private val binding
-        get() = _binding!!
+    private val binding get() = _binding!!
     private val viewModel: TutorViewModel by activityViewModels()
     private var hasBeenUpdated = false
     private lateinit var launcher: ActivityResultLauncher<Intent>
@@ -48,9 +44,14 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         setUpLauncher()
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        _binding = FragmentProfileBinding.bind(view)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentProfileBinding.inflate(inflater, container, false)
+        val view = binding.root
+
         setHasOptionsMenu(true)
         subscribeToTutorLogoutEvents()
         subscribeToTutorUpdateEvents()
@@ -61,6 +62,8 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             if(binding.profileModulesEt.text.toString().isNotEmpty())
                 addChip(binding.profileModulesEt.text.toString())
         }
+
+        return view
     }
 
     private fun addChip(chipText: String) {
@@ -216,9 +219,8 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     private fun subscribeToTutorUpdateEvents() = viewLifecycleOwner.lifecycleScope.launch {
         viewModel.tutorUpdateState.collect { response->
             when(response){
-                is Result.Loading-> showProgressBar()
+                is Result.Loading-> Unit
                 is Result.Error ->{
-                    hideProgressBar()
                     Toast.makeText(requireContext(), response.message, Toast.LENGTH_LONG).show()
                     findNavController().run {
                         popBackStack()
@@ -226,7 +228,6 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                     }
                 }
                 is Result.Success->{
-                    hideProgressBar()
                     Toast.makeText(requireContext(),"Successfully updated", Toast.LENGTH_LONG).show()
                 }
             }
@@ -252,9 +253,8 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         binding.profileProgressbar.isVisible = true
     }
 
-
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         _binding = null
     }
 }

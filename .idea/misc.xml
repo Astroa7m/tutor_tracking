@@ -6,6 +6,9 @@
         <entry key="..\:/Users/Administrator/AndroidStudioProjects/TutorTracking/app/src/main/res/drawable-anydpi/ic_default_profile.xml" value="0.23229166666666667" />
         <entry key="..\:/Users/Administrator/AndroidStudioProjects/TutorTracking/app/src/main/res/drawable-night/bottom_nav_colors.xml" value="0.31851851851851853" />
         <entry key="..\:/Users/Administrator/AndroidStudioProjects/TutorTracking/app/src/main/res/drawable-night/image_background.xml" value="0.3828125" />
+        <entry key="..\:/Users/Administrator/AndroidStudioProjects/TutorTracking/app/src/main/res/drawable-night/splash.xml" value="0.362962962962963" />
+        <entry key="..\:/Users/Administrator/AndroidStudioProjects/TutorTracking/app/src/main/res/drawable-night/splashNight.xml" value="0.3466666666666667" />
+        <entry key="..\:/Users/Administrator/AndroidStudioProjects/TutorTracking/app/src/main/res/drawable-notnight/splash.xml" value="0.362962962962963" />
         <entry key="..\:/Users/Administrator/AndroidStudioProjects/TutorTracking/app/src/main/res/drawable-v24/text_fields_background.xml" value="0.3828125" />
         <entry key="..\:/Users/Administrator/AndroidStudioProjects/TutorTracking/app/src/main/res/drawable/add_button_bg.xml" value="0.3828125" />
         <entry key="..\:/Users/Administrator/AndroidStudioProjects/TutorTracking/app/src/main/res/drawable/bottom_nav_colors.xml" value="0.3769230769230769" />
@@ -13,9 +16,15 @@
         <entry key="..\:/Users/Administrator/AndroidStudioProjects/TutorTracking/app/src/main/res/drawable/edit_text_background.xml" value="0.3828125" />
         <entry key="..\:/Users/Administrator/AndroidStudioProjects/TutorTracking/app/src/main/res/drawable/ic_delete.xml" value="0.3828125" />
         <entry key="..\:/Users/Administrator/AndroidStudioProjects/TutorTracking/app/src/main/res/drawable/ic_profile.xml" value="0.3828125" />
+        <entry key="..\:/Users/Administrator/AndroidStudioProjects/TutorTracking/app/src/main/res/drawable/ic_smartphone_dark.xml" value="0.362962962962963" />
+        <entry key="..\:/Users/Administrator/AndroidStudioProjects/TutorTracking/app/src/main/res/drawable/ic_smartphone_light.xml" value="0.362962962962963" />
         <entry key="..\:/Users/Administrator/AndroidStudioProjects/TutorTracking/app/src/main/res/drawable/ic_sort.xml" value="0.25" />
         <entry key="..\:/Users/Administrator/AndroidStudioProjects/TutorTracking/app/src/main/res/drawable/image_background.xml" value="0.37407407407407406" />
         <entry key="..\:/Users/Administrator/AndroidStudioProjects/TutorTracking/app/src/main/res/drawable/image_foreground.xml" value="0.3769230769230769" />
+        <entry key="..\:/Users/Administrator/AndroidStudioProjects/TutorTracking/app/src/main/res/drawable/spalsh.xml" value="0.362962962962963" />
+        <entry key="..\:/Users/Administrator/AndroidStudioProjects/TutorTracking/app/src/main/res/drawable/splash.xml" value="0.362962962962963" />
+        <entry key="..\:/Users/Administrator/AndroidStudioProjects/TutorTracking/app/src/main/res/drawable/splashNight.xml" value="0.3466666666666667" />
+        <entry key="..\:/Users/Administrator/AndroidStudioProjects/TutorTracking/app/src/main/res/drawable/splash_night.xml" value="0.3466666666666667" />
         <entry key="..\:/Users/Administrator/AndroidStudioProjects/TutorTracking/app/src/main/res/layout/activity_main.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Administrator/AndroidStudioProjects/TutorTracking/app/src/main/res/layout/add_student_bottom_sheet.xml" value="0.5" />
         <entry key="..\:/Users/Administrator/AndroidStudioProjects/TutorTracking/app/src/main/res/layout/add_student_dialog.xml" value="0.36666666666666664" />
@@ -31,6 +40,7 @@
         <entry key="..\:/Users/Administrator/AndroidStudioProjects/TutorTracking/app/src/main/res/menu/bottom_menu.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Administrator/AndroidStudioProjects/TutorTracking/app/src/main/res/menu/main_menu.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Administrator/AndroidStudioProjects/TutorTracking/app/src/main/res/menu/profile_menu.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Administrator/AndroidStudioProjects/TutorTracking/app/src/main/res/mipmap-anydpi-v26/ic_launcher_tracking_icon.xml" value="0.362962962962963" />
       </map>
     </option>
   </component>

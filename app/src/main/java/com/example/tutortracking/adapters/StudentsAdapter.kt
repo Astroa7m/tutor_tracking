@@ -56,8 +56,10 @@ class StudentsAdapter(private inline val clickListener: (LocalStudent)->Unit, pr
     }
 
     override fun submitList(list: MutableList<LocalStudent>?) {
-        super.submitList(list)
-        moveToFirst()
+        val runnableCallback = Runnable {
+            moveToFirst()
+        }
+        super.submitList(list, runnableCallback)
     }
 
     class DiffUtilCallback : DiffUtil.ItemCallback<LocalStudent>(){

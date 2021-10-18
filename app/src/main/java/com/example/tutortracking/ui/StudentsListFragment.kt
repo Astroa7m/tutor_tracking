@@ -5,10 +5,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
@@ -36,10 +33,9 @@ import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
-class StudentsListFragment : Fragment(R.layout.fragment_students_list), SearchView.OnQueryTextListener {
+class StudentsListFragment : Fragment(), SearchView.OnQueryTextListener {
     private var _binding: FragmentStudentsListBinding? = null
-    private val binding:FragmentStudentsListBinding?
-        get() = _binding!!
+    private val binding get() = _binding!!
     private val tutorViewModel : TutorViewModel by activityViewModels()
     private val studentsViewModel : StudentViewModel by activityViewModels()
     private val colorDrawable = ColorDrawable(Color.parseColor("#BD4545"))
@@ -47,15 +43,18 @@ class StudentsListFragment : Fragment(R.layout.fragment_students_list), SearchVi
     private lateinit var adapter: StudentsAdapter
 
     @ExperimentalCoroutinesApi
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        _binding = FragmentStudentsListBinding.bind(view)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentStudentsListBinding.inflate(inflater, container, false)
+        val view = binding.root
 
         val hasSessionStarted = (activity as MainActivity).hasSessionStarted
-        if (hasSessionStarted) {
-            binding!!.swipeRefreshLayout.isRefreshing = true
+
+        if (hasSessionStarted)
             syncData()
-        }
 
         setHasOptionsMenu(true)
         setUpRV()
@@ -63,10 +62,12 @@ class StudentsListFragment : Fragment(R.layout.fragment_students_list), SearchVi
         deleteIcon = ContextCompat.getDrawable(requireContext(),R.drawable.ic_delete)!!
         validateUser()
         subscribeToDeleteEvents()
-        binding!!.swipeRefreshLayout.setOnRefreshListener {
-                syncData()
-             }
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            syncData()
         }
+
+        return view
+    }
 
     private fun validateUser() = viewLifecycleOwner.lifecycleScope.launch {
         tutorViewModel.shouldNavigateToRegister.collect{ shouldNavigate->
@@ -77,10 +78,9 @@ class StudentsListFragment : Fragment(R.layout.fragment_students_list), SearchVi
 
     private fun syncData() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            binding.swipeRefreshLayout.isRefreshing = true
             studentsViewModel.syncData {
-                binding?.let {
-                    it.swipeRefreshLayout.isRefreshing = false
-                }
+                binding.swipeRefreshLayout.isRefreshing = false
             }
         }
     }
@@ -122,13 +122,13 @@ class StudentsListFragment : Fragment(R.layout.fragment_students_list), SearchVi
     }
 
     private fun moveToFirst() {
-       binding!!.mainRecyclerView.smoothScrollToPosition(0)
+       binding.mainRecyclerView.smoothScrollToPosition(0)
     }
 
     @ExperimentalCoroutinesApi
     private fun setList() = viewLifecycleOwner.lifecycleScope.launch {
         studentsViewModel.studentsList.collect {
-            binding!!.noStudentsText.isVisible = it.isEmpty()
+            binding.noStudentsText.isVisible = it.isEmpty()
             adapter.submitList(it){
                 moveToFirst()
             }
@@ -142,7 +142,7 @@ class StudentsListFragment : Fragment(R.layout.fragment_students_list), SearchVi
                     val deletionTarget = adapter.currentList[viewHolder.bindingAdapterPosition]
                     studentsViewModel.deleteStudent(deletionTarget)
                     Snackbar.make(
-                        binding!!.root,
+                        binding.root,
                         "Student ${deletionTarget.studentName} was deleted",
                         Snackbar.LENGTH_LONG)
                         .setAction("Undo"){
@@ -198,11 +198,11 @@ class StudentsListFragment : Fragment(R.layout.fragment_students_list), SearchVi
     }
 
     private fun hideProgressBar() {
-        binding!!.mainProgressBar.isVisible = false
+        binding.mainProgressBar.isVisible = false
     }
 
     private fun showProgressBar() {
-        binding!!.mainProgressBar.isVisible = true
+        binding.mainProgressBar.isVisible = true
     }
 
     private fun setUpRV(){
@@ -212,15 +212,10 @@ class StudentsListFragment : Fragment(R.layout.fragment_students_list), SearchVi
             {
                 moveToFirst()
             })
-        binding!!.mainRecyclerView.also {
+        binding.mainRecyclerView.also {
             it.adapter = adapter
             ItemTouchHelper(simpleGestureCallBack).attachToRecyclerView(it)
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
     }
 
     override fun onQueryTextSubmit(query: String?): Boolean {
@@ -246,9 +241,14 @@ class StudentsListFragment : Fragment(R.layout.fragment_students_list), SearchVi
 
     private fun updateEmptyListText(query: String?) {
         when{
-            query!! == "" && adapter.currentList.isEmpty() -> binding!!.noStudentsText.text = getString(R.string.no_students)
-            query != "" && adapter.currentList.isEmpty() ->  binding!!.noStudentsText.text = getString(R.string.no_student_from_search)
+            query!! == "" && adapter.currentList.isEmpty() -> binding.noStudentsText.text = getString(R.string.no_students)
+            query != "" && adapter.currentList.isEmpty() ->  binding.noStudentsText.text = getString(R.string.no_student_from_search)
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
 }

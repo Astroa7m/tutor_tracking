@@ -15,9 +15,9 @@
         <item name="android:textColorPrimary">#5A6870</item>
     </style>
 
-    <style name="ButtonStyle" parent="TextAppearance.MaterialComponents.Button">
-        <item name="android:background">@android:color/transparent</item>
-        <item name="android:textColor">@color/buttonTextColor</item>
+    <style name="SplashTheme" parent="Theme.MaterialComponents.DayNight">
+        <item name="android:windowBackground">@drawable/splash</item>
+        <item name="android:statusBarColor">@color/white</item>
     </style>
 
 </resources>

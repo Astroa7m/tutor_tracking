@@ -1,7 +1,9 @@
 package com.example.tutortracking.ui
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -17,16 +19,22 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class LoginFragment : Fragment(R.layout.fragment_login) {
+class LoginFragment : Fragment() {
     private var _binding: FragmentLoginBinding?=null
-    private val binding
-        get() = _binding!!
+    private val binding get() = _binding!!
     private val viewModel : TutorViewModel by activityViewModels()
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        _binding = FragmentLoginBinding.bind(view)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentLoginBinding.inflate(inflater, container, false)
+        val view = binding.root
+
         subscribeToTutorLoginEvents()
+
+        (activity as MainActivity).hasSessionStarted = true
 
         binding.haveAccountTv.setOnClickListener {
             findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToRegisterFragment())
@@ -34,6 +42,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 
         binding.loginLoginChip.setOnClickListener { sendUserInput() }
 
+        return view
     }
 
     private fun sendUserInput() {
@@ -67,9 +76,9 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         binding.loginProgressBar.isVisible = true
     }
 
-
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         _binding = null
     }
+
 }

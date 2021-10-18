@@ -19,6 +19,11 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    //print test logs
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -89,4 +94,23 @@ dependencies {
 
     //circular image view
     implementation "de.hdodenhof:circleimageview:3.1.0"
+
+    // coroutine testing
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.1"
+    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.1"
+
+    // truth library for assertions
+    testImplementation "com.google.truth:truth:1.0.1"
+    androidTestImplementation "com.google.truth:truth:1.0.1"
+
+    //local unit tests
+    testImplementation "androidx.arch.core:core-testing:2.1.0"
+    androidTestImplementation "androidx.arch.core:core-testing:2.1.0"
+    implementation "androidx.test:core:1.4.0"
+
+    //turbine library
+    androidTestImplementation 'app.cash.turbine:turbine:0.6.1'
+    testImplementation 'app.cash.turbine:turbine:0.6.1'
+
+
 }

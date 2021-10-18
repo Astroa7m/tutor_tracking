@@ -18,7 +18,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.tutortracking.R
-import com.example.tutortracking.data.localdata.models.LocalStudent
 import com.example.tutortracking.databinding.AddStudentBottomSheetBinding
 import com.example.tutortracking.util.Result
 import com.example.tutortracking.util.decode
@@ -30,11 +29,11 @@ import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+
 @AndroidEntryPoint
 class AddStudentBottomSheetFragment : BottomSheetDialogFragment() {
     private var _binding: AddStudentBottomSheetBinding?=null
-    private val binding: AddStudentBottomSheetBinding
-        get() = _binding!!
+    private val binding get() = _binding!!
     private val viewModel: StudentViewModel by activityViewModels()
     private val args: AddStudentBottomSheetFragmentArgs by navArgs()
     private lateinit var launcher: ActivityResultLauncher<Intent>
@@ -57,14 +56,12 @@ class AddStudentBottomSheetFragment : BottomSheetDialogFragment() {
     private fun subscribeToUpdateStudentEvent() = lifecycleScope.launch {
         viewModel.updateStudentState.collect { response->
             when(response){
-                is Result.Loading-> showProgressBar()
+                is Result.Loading-> Unit
                 is Result.Error ->{
-                    hideProgressBar()
                     Toast.makeText(requireContext(), response.message, Toast.LENGTH_LONG).show()
                     findNavController().popBackStack()
                 }
                 is Result.Success->{
-                    hideProgressBar()
                     Toast.makeText(requireContext(), response.data!!.message, Toast.LENGTH_LONG).show()
                     findNavController().popBackStack()
                 }
@@ -148,6 +145,7 @@ class AddStudentBottomSheetFragment : BottomSheetDialogFragment() {
     private fun doEnabling() {
         binding.apply {
             disableOrEnableViews(true, addStudentsDialogYear, addStudentsDialogName)
+            profileChooseASubjectTextview.isVisible = true
             addStudentsDialogEdit.isVisible = false
             addStudentsDialogFab.isVisible = true
             addStudentsDialogChip.isVisible = true
@@ -161,6 +159,7 @@ class AddStudentBottomSheetFragment : BottomSheetDialogFragment() {
 
     private fun doDisabling() {
         binding.apply {
+            profileChooseASubjectTextview.isVisible = false
             disableOrEnableViews(false, addStudentsDialogYear, addStudentsDialogName)
             addStudentsDialogEdit.isVisible = true
             addStudentsDialogFab.isVisible = false
@@ -178,31 +177,22 @@ class AddStudentBottomSheetFragment : BottomSheetDialogFragment() {
         viewLifecycleOwner.lifecycleScope.launch { addOtherChips() }
         binding.addStudentsDialogFab.setOnClickListener { addStudent() }
         binding.addStudentsDialogEdit.isVisible = false
+        binding.profileChooseASubjectTextview.isVisible = true
     }
 
     private fun subscribeToAddingStudentEvent() = lifecycleScope.launch {
         viewModel.addStudentState.collect { response->
             when(response){
-                is Result.Loading-> showProgressBar()
+                is Result.Loading-> Unit
                 is Result.Error ->{
-                    hideProgressBar()
                     Toast.makeText(requireContext(), response.message, Toast.LENGTH_LONG).show()
                 }
                 is Result.Success->{
-                    hideProgressBar()
                     Toast.makeText(requireContext(), response.data!!.message, Toast.LENGTH_LONG).show()
                     findNavController().popBackStack()
                 }
             }
         }
-    }
-
-    private fun hideProgressBar() {
-        binding.addStudentsDialogProgressbar.isVisible = false
-    }
-
-    private fun showProgressBar() {
-        binding.addStudentsDialogProgressbar.isVisible = true
     }
 
     override fun onAttach(context: Context) {
@@ -251,8 +241,9 @@ class AddStudentBottomSheetFragment : BottomSheetDialogFragment() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         _binding = null
     }
+
 }

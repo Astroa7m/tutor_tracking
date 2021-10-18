@@ -6,5 +6,5 @@
     <string name="student_subject">Subject: %s</string>
     <string name="student_year">Year: %s</string>
     <string name="no_student_from_search">No such student matches the search</string>
-    <string name="no_students">You do not have any students currently refresh or click on + to start adding students</string>
+    <string name="no_students">You do not have any students currently click on + to start adding students</string>
 </resources>

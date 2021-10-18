@@ -5,7 +5,9 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -22,14 +24,12 @@ import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class RegisterFragment : Fragment(R.layout.fragment_register) {
+class RegisterFragment : Fragment() {
     private var _binding: FragmentRegisterBinding?=null
-    private val binding
-        get() = _binding!!
+    private val binding get() = _binding!!
     private val viewModel : TutorViewModel by activityViewModels()
     private lateinit var launcher: ActivityResultLauncher<Intent>
     private var imageUri: Uri? = null
@@ -40,11 +40,17 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
         setUpLauncher()
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        _binding = FragmentRegisterBinding.bind(view)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentRegisterBinding.inflate(inflater, container, false)
+        val view = binding.root
 
         subscribeToTutorRegisterEvents()
+
+        (activity as MainActivity).hasSessionStarted = true
 
         binding.registerRegisterButton.setOnClickListener{
             sendUserInput()
@@ -61,7 +67,7 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
                 launcher.launch(it)
             }
         }
-
+        return view
     }
 
     private fun addChip(chipText: String) {
@@ -125,9 +131,8 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
         viewModel.register(email, password, name, tutorModules, byteArrayPic)
     }
 
-
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         _binding = null
     }
 }
