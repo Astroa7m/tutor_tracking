@@ -26,7 +26,7 @@
         <entry key="..\:/Users/Administrator/AndroidStudioProjects/TutorTracking/app/src/main/res/drawable/splashNight.xml" value="0.3466666666666667" />
         <entry key="..\:/Users/Administrator/AndroidStudioProjects/TutorTracking/app/src/main/res/drawable/splash_night.xml" value="0.3466666666666667" />
         <entry key="..\:/Users/Administrator/AndroidStudioProjects/TutorTracking/app/src/main/res/layout/activity_main.xml" value="0.36666666666666664" />
-        <entry key="..\:/Users/Administrator/AndroidStudioProjects/TutorTracking/app/src/main/res/layout/add_student_bottom_sheet.xml" value="0.5" />
+        <entry key="..\:/Users/Administrator/AndroidStudioProjects/TutorTracking/app/src/main/res/layout/add_student_bottom_sheet.xml" value="0.2508361204013378" />
         <entry key="..\:/Users/Administrator/AndroidStudioProjects/TutorTracking/app/src/main/res/layout/add_student_dialog.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Administrator/AndroidStudioProjects/TutorTracking/app/src/main/res/layout/fragment_add_student.xml" value="0.33" />
         <entry key="..\:/Users/Administrator/AndroidStudioProjects/TutorTracking/app/src/main/res/layout/fragment_login.xml" value="0.75" />
@@ -44,7 +44,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_15_PREVIEW" project-jdk-name="15" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_15" project-jdk-name="15" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

@@ -1,115 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/add_students_dialog_image"
-        android:layout_width="65dp"
-        android:layout_height="65dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/image_background"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/add_students_dialog_fab"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="24dp"
-        android:clickable="true"
-        app:backgroundTint="@color/fab_button_color_background"
-        android:src="@drawable/ic_add_user"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <TextView
-        android:id="@+id/profile_choose_a_subject_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginBottom="16dp"
-        android:text="Choose a subject"
-        app:layout_constraintBottom_toTopOf="@+id/add_students_dialog_subject_chip_group_parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <HorizontalScrollView
-        android:id="@+id/add_students_dialog_subject_chip_group_parent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/add_students_dialog_fab"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.547"
-        app:layout_constraintStart_toStartOf="parent">
-    <com.google.android.material.chip.ChipGroup
-        android:id="@+id/add_students_dialog_subject_chip_group"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:singleSelection="true"
-        app:singleLine="true"/>
-    </HorizontalScrollView>
-    <EditText
-        android:id="@+id/add_students_dialog_year"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:ems="10"
-        android:hint="Student's year"
-        android:inputType="numberSigned"
-        app:layout_constraintBottom_toTopOf="@+id/profile_choose_a_subject_textview"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:layout_height="wrap_content">
 
-    <EditText
-        android:id="@+id/add_students_dialog_name"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:ems="10"
-        android:hint="Student's name"
-        android:inputType="textCapWords"
-        app:layout_constraintBottom_toTopOf="@+id/add_students_dialog_year"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/add_students_dialog_image" />
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/add_students_dialog_image"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/image_background"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/add_students_dialog_edit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:src="@drawable/ic_edit"
-        android:text="Edit"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/add_students_dialog_fab"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="24dp"
+            android:clickable="true"
+            android:src="@drawable/ic_add_user"
+            app:backgroundTint="@color/fab_button_color_background"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-    <com.google.android.material.chip.Chip
-        android:id="@+id/add_students_dialog_chip"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:backgroundTint="@color/choose_image_button_color"
-        android:text="Choose an image"
-        android:textColor="@color/buttonTextColor"
-        app:layout_constraintBottom_toBottomOf="@+id/add_students_dialog_image"
-        app:layout_constraintStart_toEndOf="@+id/add_students_dialog_image"
-        app:layout_constraintTop_toTopOf="@+id/add_students_dialog_image"
-        app:layout_constraintVertical_bias="0.529" />
+        <TextView
+            android:id="@+id/profile_choose_a_subject_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="16dp"
+            android:text="Choose a subject"
+            app:layout_constraintBottom_toTopOf="@+id/add_students_dialog_subject_chip_group_parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <HorizontalScrollView
+            android:id="@+id/add_students_dialog_subject_chip_group_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            app:layout_constraintBottom_toTopOf="@+id/add_students_dialog_fab"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.547"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/add_students_dialog_subject_chip_group"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:singleLine="true"
+                app:singleSelection="true" />
+        </HorizontalScrollView>
+
+        <EditText
+            android:id="@+id/add_students_dialog_year"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:ems="10"
+            android:hint="Student's year"
+            android:inputType="numberSigned"
+            app:layout_constraintBottom_toTopOf="@+id/profile_choose_a_subject_textview"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <EditText
+            android:id="@+id/add_students_dialog_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:ems="10"
+            android:hint="Student's name"
+            android:inputType="textCapWords"
+            app:layout_constraintBottom_toTopOf="@+id/add_students_dialog_year"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/add_students_dialog_image" />
+
+        <ImageView
+            android:id="@+id/add_students_dialog_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/ic_edit"
+            android:text="Edit"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/add_students_dialog_chip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:backgroundTint="@color/choose_image_button_color"
+            android:text="Choose an image"
+            android:textColor="@color/buttonTextColor"
+            app:layout_constraintBottom_toBottomOf="@+id/add_students_dialog_image"
+            app:layout_constraintStart_toEndOf="@+id/add_students_dialog_image"
+            app:layout_constraintTop_toTopOf="@+id/add_students_dialog_image"
+            app:layout_constraintVertical_bias="0.529" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
