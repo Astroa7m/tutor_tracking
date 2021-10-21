@@ -191,7 +191,8 @@ class ProfileFragment : Fragment() {
             }
             R.id.done->{
                 updateProfile()
-                edit.isVisible = !hasBeenUpdated
+                if(userVisibleHint)
+                    edit.isVisible = !hasBeenUpdated
                 done.isVisible = hasBeenUpdated
             }
 

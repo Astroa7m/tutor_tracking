@@ -70,13 +70,12 @@ class TutorRepositoryFake(internetConnection: Boolean = true, tutorToken: String
         return if(token.isNotEmpty()){
             localStudentsTable.add(student)
             return if(!hasInternetConnection){
-                localStudentsTable.add(student)
                 addLocallyAddedStudent(getLocallyAddedFromStudent(student))
-                Result.Success(UserResponse(true, tutorTable[0], token, "inserted locally"))
+                Result.Success(UserResponse(true, if(tutorTable.isEmpty())null else tutorTable[0], token, "inserted locally"), "inserted locally")
             }else{
                 val remoteStudent = Student(student.studentName, student.studentYear, student.studentSubject, student.studentTutorId, student.studentPic, student._id)
                 remoteStudentsList.add(remoteStudent)
-                Result.Success(UserResponse(true, tutorTable[0], token, "inserted successfully", remoteStudentsList))
+                Result.Success(UserResponse(true, if(tutorTable.isEmpty())null else tutorTable[0], token, "inserted successfully", remoteStudentsList), message = "inserted successfully")
             }
         }else{
             Result.Error("no token",UserResponse(false))
@@ -92,15 +91,15 @@ class TutorRepositoryFake(internetConnection: Boolean = true, tutorToken: String
 
     override suspend fun updateStudent(student: LocalStudent, id: String): Result<UserResponse> {
         return if(token.isNotEmpty()){
-            localStudentsTable.removeIf { Student::_id.equals(student._id) }
+            localStudentsTable.removeIf { s: LocalStudent -> s.studentName.equals(student.studentName) }
             localStudentsTable.add(student)
             return if(!hasInternetConnection){
                 addLocallyUpdatedStudent(getLocallyUpdatedFromStudent(student))
-                Result.Success(UserResponse(true, tutorTable[0], token, "updated locally"))
+                Result.Success(UserResponse(true, if(tutorTable.isEmpty())null else tutorTable[0], token, "updated locally"))
             }else{
-                remoteStudentsList.removeIf { Student::_id.equals(student._id) }
+                remoteStudentsList.removeIf { s: Student -> s.studentName.equals(student.studentName) }
                 remoteStudentsList.add(Student(student.studentName, student.studentYear, student.studentSubject, student.studentTutorId, student.studentPic, student._id))
-                Result.Success(UserResponse(true, tutorTable[0], token, "updated successfully", remoteStudentsList))
+                Result.Success(UserResponse(true, if(tutorTable.isEmpty())null else tutorTable[0], token, "updated successfully", remoteStudentsList))
             }
         }else{
             Result.Error("no token",UserResponse(false))
@@ -109,13 +108,13 @@ class TutorRepositoryFake(internetConnection: Boolean = true, tutorToken: String
 
     override suspend fun deleteStudent(student: LocalStudent): Result<UserResponse> {
         return if(token.isNotEmpty()){
-            localStudentsTable.removeIf { Student::_id.equals(student._id) }
+            localStudentsTable.removeIf { s: LocalStudent -> s.studentName.equals(student.studentName) }
             return if(!hasInternetConnection){
                 addLocallyDeletedStudent(getLocallyDeletedFromStudent(student))
-                Result.Success(UserResponse(true, tutorTable[0], token, "deleted locally"))
+                Result.Success(UserResponse(true, if(tutorTable.isEmpty())null else tutorTable[0], token, "deleted locally"))
             }else{
-                remoteStudentsList.removeIf { Student::_id.equals(student._id) }
-                Result.Success(UserResponse(true, tutorTable[0], token, "deleted successfully", remoteStudentsList))
+                remoteStudentsList.removeIf { s: Student -> s.studentName.equals(student.studentName) }
+                Result.Success(UserResponse(true, if(tutorTable.isEmpty())null else tutorTable[0], token, "deleted successfully", remoteStudentsList))
             }
         }else{
             Result.Error("no token",UserResponse(false))
@@ -133,16 +132,12 @@ class TutorRepositoryFake(internetConnection: Boolean = true, tutorToken: String
     }
 
     override suspend fun getAllStudentsFromServer(): Result<UserResponse> {
-        return if(hasInternetConnection){
             return if(token.isNotEmpty()) {
                 Result.Success(UserResponse(true, studentsList = remoteStudentsList))
             }else{
                 Result.Error("no token",UserResponse(false))
             }
-        }else{
-            Result.Error("No internet connection",UserResponse(false))
         }
-    }
 
     override suspend fun validateUser(): String? {
         return if(token.isNotEmpty()) token else null
@@ -221,49 +216,41 @@ class TutorRepositoryFake(internetConnection: Boolean = true, tutorToken: String
     }
 
     override suspend fun sync() {
-        if(hasInternetConnection){
-
-            getAllLocallyDelete().forEach { locallyDeletedStudents ->
-                remoteStudentsList.removeIf{Student::_id.equals(locallyDeletedStudents._id)}
-            }
-
-            getAllLocallyUpdated().forEach { locallyUpdatedStudent ->
-                remoteStudentsList.removeIf{Student::_id.equals(locallyUpdatedStudent._id)}
-                remoteStudentsList.add(getStudentFromLocallyUpdated(locallyUpdatedStudent))
-            }
-            getAllLocallyAdded().forEach { locallyAddedStudents->
-                remoteStudentsList.add(getStudentFromLocallyAdded(locallyAddedStudents))
-            }
-
-            if(remoteStudentsList.isNullOrEmpty())
-                localStudentsTable.clear()
-
-            localStudentsTable.forEach {
-                remoteStudentsList.add(Student(it.studentName, it.studentYear, it.studentSubject,it.studentTutorId,
-                    it.studentPic, it._id))
-            }
-
-            remoteStudentsList.forEach { remoteStudent->
-                val localStudent = LocalStudent(
-                    remoteStudent.studentName,
-                    remoteStudent.studentYear,
-                    remoteStudent.studentSubject,
-                    remoteStudent.studentTutorId,
-                    remoteStudent.studentPic,
-                    isConnected = true,
-                    remoteStudent._id.toString()
-                )
-                if(!remoteStudentsList.contains(remoteStudent)){
-                    localStudentsTable.removeIf{LocalStudent::_id.equals(remoteStudent._id)}
-                }
-                localStudentsTable.removeIf{LocalStudent::_id.equals(localStudent._id)}
-                localStudentsTable.add(localStudent)
-            }
-
-            deleteRecordsFromLocallyAddedStudent()
-            deleteRecordsFromLocallyUpdatedStudent()
-            deleteRecordsFromLocallyDeletedStudent()
+        getAllLocallyDelete().forEach { locallyDeletedStudents ->
+            remoteStudentsList.removeIf { s: Student -> s._id.equals(locallyDeletedStudents._id) }
         }
+
+        getAllLocallyUpdated().forEach { locallyUpdatedStudent ->
+            remoteStudentsList.removeIf { s: Student -> s._id.equals(locallyUpdatedStudent._id) }
+            remoteStudentsList.add(getStudentFromLocallyUpdated(locallyUpdatedStudent))
+        }
+        getAllLocallyAdded().forEach { locallyAddedStudents ->
+            remoteStudentsList.add(getStudentFromLocallyAdded(locallyAddedStudents))
+        }
+
+        if (remoteStudentsList.isNullOrEmpty())
+            localStudentsTable.clear()
+
+        remoteStudentsList.forEach { remoteStudent ->
+            val localStudent = LocalStudent(
+                remoteStudent.studentName,
+                remoteStudent.studentYear,
+                remoteStudent.studentSubject,
+                remoteStudent.studentTutorId,
+                remoteStudent.studentPic,
+                isConnected = true,
+                remoteStudent._id.toString()
+            )
+            if (!remoteStudentsList.contains(remoteStudent)) {
+                localStudentsTable.removeIf { s: LocalStudent -> s._id == localStudent._id }
+            }
+            localStudentsTable.removeIf { s: LocalStudent -> s._id == localStudent._id }
+            localStudentsTable.add(localStudent)
+        }
+
+        deleteRecordsFromLocallyAddedStudent()
+        deleteRecordsFromLocallyUpdatedStudent()
+        deleteRecordsFromLocallyDeletedStudent()
     }
 
 }

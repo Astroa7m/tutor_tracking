@@ -22,3 +22,4 @@ fun String.capitalize()=
         else
             firstChar.toString()
     }
+

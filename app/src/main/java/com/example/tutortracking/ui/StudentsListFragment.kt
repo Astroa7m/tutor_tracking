@@ -14,6 +14,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -31,18 +32,23 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-
+@ExperimentalCoroutinesApi
 @AndroidEntryPoint
-class StudentsListFragment : Fragment(), SearchView.OnQueryTextListener {
+class StudentsListFragment : Fragment(R.layout.student_list_items), SearchView.OnQueryTextListener {
     private var _binding: FragmentStudentsListBinding? = null
-    private val binding get() = _binding!!
+    private val binding
+    get() = _binding!!
     private val tutorViewModel : TutorViewModel by activityViewModels()
     private val studentsViewModel : StudentViewModel by activityViewModels()
     private val colorDrawable = ColorDrawable(Color.parseColor("#BD4545"))
     private lateinit var deleteIcon : Drawable
     private lateinit var adapter: StudentsAdapter
 
-    @ExperimentalCoroutinesApi
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        _binding = FragmentStudentsListBinding.bind(view)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

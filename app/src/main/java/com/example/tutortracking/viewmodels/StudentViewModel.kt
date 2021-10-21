@@ -74,7 +74,7 @@ class StudentViewModel @Inject constructor(
         id: String
     ) = viewModelScope.launch {
         if(name.isEmpty() || year.isEmpty() || subject.isEmpty()){
-            _addStudentState.emit(Result.Error("Fields cannot be left empty"))
+            _updateStudentState.emit(Result.Error("Fields cannot be left empty"))
             return@launch
         }
         _updateStudentState.emit(Result.Loading())
@@ -92,7 +92,7 @@ class StudentViewModel @Inject constructor(
     }
 
     suspend inline fun syncData(
-        crossinline onFinish : () -> Unit
+        crossinline onFinish: () -> Unit
     )
    {
        repository.sync()

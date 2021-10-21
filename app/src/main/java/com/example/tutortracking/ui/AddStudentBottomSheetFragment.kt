@@ -56,12 +56,17 @@ class AddStudentBottomSheetFragment : BottomSheetDialogFragment() {
     private fun subscribeToUpdateStudentEvent() = lifecycleScope.launch {
         viewModel.updateStudentState.collect { response->
             when(response){
-                is Result.Loading-> Unit
+                is Result.Loading-> {
+                    binding.addStudentsDialogFab.isEnabled = false
+                    binding.sheetProgressBar.isVisible = true
+                }
                 is Result.Error ->{
+                    binding.sheetProgressBar.isVisible = false
+                    binding.addStudentsDialogFab.isEnabled = true
                     Toast.makeText(requireContext(), response.message, Toast.LENGTH_LONG).show()
-                    findNavController().popBackStack()
                 }
                 is Result.Success->{
+                    binding.sheetProgressBar.isVisible = false
                     Toast.makeText(requireContext(), response.data!!.message, Toast.LENGTH_LONG).show()
                     findNavController().popBackStack()
                 }
@@ -183,11 +188,17 @@ class AddStudentBottomSheetFragment : BottomSheetDialogFragment() {
     private fun subscribeToAddingStudentEvent() = lifecycleScope.launch {
         viewModel.addStudentState.collect { response->
             when(response){
-                is Result.Loading-> Unit
+                is Result.Loading-> {
+                    binding.sheetProgressBar.isVisible = true
+                    binding.addStudentsDialogFab.isEnabled = false
+                }
                 is Result.Error ->{
+                    binding.sheetProgressBar.isVisible = false
+                    binding.addStudentsDialogFab.isEnabled = true
                     Toast.makeText(requireContext(), response.message, Toast.LENGTH_LONG).show()
                 }
                 is Result.Success->{
+                    binding.sheetProgressBar.isVisible = false
                     Toast.makeText(requireContext(), response.data!!.message, Toast.LENGTH_LONG).show()
                     findNavController().popBackStack()
                 }
