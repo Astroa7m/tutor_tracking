@@ -20,7 +20,10 @@ import kotlinx.coroutines.flow.map
 import java.io.IOException
 
 class SessionManager(val context: Context) {
-    private val Context.myDatastore : DataStore<Preferences> by preferencesDataStore("session_info")
+
+    private companion object{
+        val Context.myDatastore : DataStore<Preferences> by preferencesDataStore("session_info")
+    }
 
     suspend fun updateSession(token: String, tutorId: String){
         context.myDatastore.edit { pref->

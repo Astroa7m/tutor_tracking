@@ -75,7 +75,7 @@ class ProfileFragment : Fragment() {
             isFocusable = false
             setOnCloseIconClickListener {
                 binding.profileChipGroup.removeView(this)
-                tutorModules.remove(this.text)
+                tutorModules.remove(chipText.capitalize())
             }
             binding.profileChipGroup.addView(this)
             tutorModules.add(chipText.capitalize())
@@ -220,8 +220,9 @@ class ProfileFragment : Fragment() {
     private fun subscribeToTutorUpdateEvents() = viewLifecycleOwner.lifecycleScope.launch {
         viewModel.tutorUpdateState.collect { response->
             when(response){
-                is Result.Loading-> Unit
+                is Result.Loading-> showProgressBar()
                 is Result.Error ->{
+                    hideProgressBar()
                     Toast.makeText(requireContext(), response.message, Toast.LENGTH_LONG).show()
                     findNavController().run {
                         popBackStack()
@@ -229,6 +230,7 @@ class ProfileFragment : Fragment() {
                     }
                 }
                 is Result.Success->{
+                    hideProgressBar()
                     Toast.makeText(requireContext(),"Successfully updated", Toast.LENGTH_LONG).show()
                 }
             }

@@ -24,8 +24,12 @@ class MainActivity : AppCompatActivity() {
     var hasSessionStarted = false
     @Inject
     lateinit var sessionManager: SessionManager
+    @Inject
+    lateinit var fragmentFactory: TutorTrackingFragmentsFactory
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        supportFragmentManager.fragmentFactory = fragmentFactory
         setTheme(R.style.Theme_TutorTracking)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)

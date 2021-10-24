@@ -3,45 +3,51 @@ package com.example.tutortracking.data.localdata
 import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.asLiveData
-import androidx.room.Room
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.filters.SmallTest
-import com.androiddevs.shoppinglisttestingyt.getOrAwaitValue
 import com.example.tutortracking.data.localdata.models.LocalStudent
 import com.example.tutortracking.data.localdata.models.LocallyAddedStudent
 import com.example.tutortracking.data.localdata.models.LocallyDeletedStudent
 import com.example.tutortracking.data.localdata.models.LocallyUpdatedStudent
 import com.example.tutortracking.data.remotedata.models.Tutor
+import com.example.tutortracking.getOrAwaitValue
 import com.example.tutortracking.util.SortOrder
 import com.example.tutortracking.util.getLocallyAddedFromStudent
 import com.example.tutortracking.util.getLocallyDeletedFromStudent
 import com.example.tutortracking.util.getLocallyUpdatedFromStudent
 import com.google.common.truth.Truth.assertThat
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import javax.inject.Inject
+import javax.inject.Named
 
+@HiltAndroidTest
 @SmallTest
 @ExperimentalCoroutinesApi
 class StudentDaoTest {
 
     @get:Rule
+    val hiltTestRule = HiltAndroidRule(this)
+
+    @get:Rule
     val instantTaskExecutor = InstantTaskExecutorRule()
 
-    private lateinit var database: StudentDatabase
+    @Named("db_test")
+    @Inject
+    lateinit var database: StudentDatabase
+
     private lateinit var dao: StudentDao
 
     private var isOnline = false
 
     @Before
     fun setup(){
-        database = Room.inMemoryDatabaseBuilder(
-            ApplicationProvider.getApplicationContext(),
-            StudentDatabase::class.java,
-        ).allowMainThreadQueries().build()
+        hiltTestRule.inject()
         dao = database.getStudentDao()
     }
 

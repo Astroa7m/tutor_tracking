@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
@@ -21,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.tutortracking.R
 import com.example.tutortracking.adapters.StudentsAdapter
 import com.example.tutortracking.databinding.FragmentStudentsListBinding
+import com.example.tutortracking.util.EspressoIdlingResource
 import com.example.tutortracking.util.Result
 import com.example.tutortracking.util.SimpleGesture
 import com.example.tutortracking.util.SortOrder
@@ -31,18 +33,21 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
-class StudentsListFragment : Fragment(R.layout.student_list_items), SearchView.OnQueryTextListener {
+class StudentsListFragment @Inject constructor(
+    private val studentViewModel: StudentViewModel?
+) : Fragment(R.layout.fragment_students_list), SearchView.OnQueryTextListener {
     private var _binding: FragmentStudentsListBinding? = null
     private val binding
     get() = _binding!!
     private val tutorViewModel : TutorViewModel by activityViewModels()
-    private val studentsViewModel : StudentViewModel by activityViewModels()
+    lateinit var studentsViewModel : StudentViewModel
     private val colorDrawable = ColorDrawable(Color.parseColor("#BD4545"))
     private lateinit var deleteIcon : Drawable
-    private lateinit var adapter: StudentsAdapter
+    lateinit var adapter: StudentsAdapter
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -57,10 +62,15 @@ class StudentsListFragment : Fragment(R.layout.student_list_items), SearchView.O
         _binding = FragmentStudentsListBinding.inflate(inflater, container, false)
         val view = binding.root
 
-        val hasSessionStarted = (activity as MainActivity).hasSessionStarted
+        studentsViewModel = studentViewModel ?: ViewModelProvider(requireActivity()).get(StudentViewModel::class.java)
 
-        if (hasSessionStarted)
+        val hasSessionStarted: Boolean = try {
+            (activity as MainActivity).hasSessionStarted
+        }catch (e: Exception){true}
+
+        if (hasSessionStarted){
             syncData()
+        }
 
         setHasOptionsMenu(true)
         setUpRV()
@@ -70,6 +80,11 @@ class StudentsListFragment : Fragment(R.layout.student_list_items), SearchView.O
         subscribeToDeleteEvents()
         binding.swipeRefreshLayout.setOnRefreshListener {
             syncData()
+        }
+
+        adapter.setOnClickListener {
+            if(findNavController().currentDestination?.id==R.id.studentsListFragment)
+                findNavController().navigate(StudentsListFragmentDirections.actionStudentsListFragmentToAddStudentBottomSheetFragment(it))
         }
 
         return view
@@ -106,7 +121,10 @@ class StudentsListFragment : Fragment(R.layout.student_list_items), SearchView.O
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
-            R.id.add_student -> findNavController().navigate(StudentsListFragmentDirections.actionStudentsListFragmentToAddStudentBottomSheetFragment())
+            R.id.add_student -> {
+                if(findNavController().currentDestination?.id==R.id.studentsListFragment)
+                    findNavController().navigate(StudentsListFragmentDirections.actionStudentsListFragmentToAddStudentBottomSheetFragment())
+            }
             R.id.by_name -> sortBy(SortOrder.BY_NAME)
             R.id.by_year -> sortBy(SortOrder.BY_YEAR)
             R.id.by_subject -> sortBy(SortOrder.BY_SUBJECT)
@@ -212,12 +230,10 @@ class StudentsListFragment : Fragment(R.layout.student_list_items), SearchView.O
     }
 
     private fun setUpRV(){
-        adapter = StudentsAdapter ({
-            findNavController().navigate(StudentsListFragmentDirections.actionStudentsListFragmentToAddStudentBottomSheetFragment(it))
-        },
+        adapter = StudentsAdapter()
             {
                 moveToFirst()
-            })
+            }
         binding.mainRecyclerView.also {
             it.adapter = adapter
             ItemTouchHelper(simpleGestureCallBack).attachToRecyclerView(it)

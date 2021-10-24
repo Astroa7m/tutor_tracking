@@ -92,7 +92,7 @@ class StudentViewModel @Inject constructor(
     }
 
     suspend inline fun syncData(
-        crossinline onFinish: () -> Unit
+        crossinline onFinish: () -> Unit = {}
     )
    {
        repository.sync()

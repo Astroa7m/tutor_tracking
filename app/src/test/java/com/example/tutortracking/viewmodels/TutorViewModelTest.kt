@@ -1,6 +1,7 @@
 package com.example.tutortracking.viewmodels
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.test.filters.SmallTest
 import app.cash.turbine.test
 import com.example.tutortracking.CoroutinesTestRule
 import com.example.tutortracking.data.localdata.models.LocalStudent
@@ -20,6 +21,7 @@ import org.mockito.Mock
 import org.mockito.Mockito.mock
 import kotlin.time.ExperimentalTime
 
+@SmallTest
 @ExperimentalCoroutinesApi
 class TutorViewModelTest {
 

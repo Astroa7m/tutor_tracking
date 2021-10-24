@@ -8,13 +8,15 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tutortracking.R
 import com.example.tutortracking.data.localdata.models.LocalStudent
+import com.example.tutortracking.data.remotedata.models.Student
 import com.example.tutortracking.databinding.StudentListItemsBinding
+import com.example.tutortracking.util.EspressoIdlingResource
 import com.example.tutortracking.util.decode
 import com.example.tutortracking.util.getImageString
 
-class StudentsAdapter(private inline val clickListener: (LocalStudent)->Unit, private inline val moveToFirst : ()->Unit) : ListAdapter<LocalStudent, StudentsAdapter.StudentHolder>(DiffUtilCallback()) {
+class StudentsAdapter(private inline val moveToFirst : ()->Unit) : ListAdapter<LocalStudent, StudentsAdapter.StudentHolder>(DiffUtilCallback()) {
 
-    class StudentHolder(private val binding: StudentListItemsBinding, getItemAtPos: (Int)->Unit?) : RecyclerView.ViewHolder(binding.root) {
+    class StudentHolder(private val binding: StudentListItemsBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: LocalStudent?, context: Context) {
             binding.apply {
                 if(item?.studentPic!=null)
@@ -33,9 +35,6 @@ class StudentsAdapter(private inline val clickListener: (LocalStudent)->Unit, pr
                 )
             }
         }
-        init {
-            binding.root.setOnClickListener {getItemAtPos(bindingAdapterPosition)}
-        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StudentHolder {
@@ -46,18 +45,29 @@ class StudentsAdapter(private inline val clickListener: (LocalStudent)->Unit, pr
                 parent,
                 false
             )
-        ) {
-            clickListener(currentList[it])
-        }
+        )
+    }
+
+    private var onClickListener: ((LocalStudent) -> Unit)? = null
+
+    fun setOnClickListener(listener: (LocalStudent)->Unit){
+        onClickListener = listener
     }
 
     override fun onBindViewHolder(holder: StudentHolder, position: Int) {
        holder.bind(getItem(position),holder.itemView.context)
+        holder.itemView.setOnClickListener {
+            onClickListener?.let {item->
+                item(currentList[position])
+            }
+        }
     }
 
     override fun submitList(list: MutableList<LocalStudent>?) {
+        EspressoIdlingResource.increment()
         val runnableCallback = Runnable {
             moveToFirst()
+            EspressoIdlingResource.decrement()
         }
         super.submitList(list, runnableCallback)
     }

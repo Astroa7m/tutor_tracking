@@ -2,6 +2,7 @@ package com.example.tutortracking.viewmodels
 
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.test.filters.SmallTest
 import app.cash.turbine.test
 import com.example.tutortracking.CoroutinesTestRule
 import com.example.tutortracking.data.localdata.models.LocalStudent
@@ -29,6 +30,7 @@ import kotlin.time.ExperimentalTime
 
 @ExperimentalTime
 @ExperimentalCoroutinesApi
+@SmallTest
 @RunWith(MockitoJUnitRunner::class)
 class StudentViewModelTest{
 
@@ -129,7 +131,7 @@ class StudentViewModelTest{
         studentViewModelOffline.addStudent("asd","1","asd", null)
         assertThat(studentViewModelOffline.repository.getAllLocallyAdded()).isNotEmpty()
         println("before ${studentViewModelOffline.repository.getAllLocallyAdded()}")
-        studentViewModelOffline.syncData{}
+        studentViewModelOffline.syncData()
         println("after ${studentViewModelOffline.repository.getAllLocallyAdded()}")
         assertThat(studentViewModelOffline.repository.getAllLocallyAdded()).isEmpty()
     }
@@ -139,7 +141,7 @@ class StudentViewModelTest{
         studentViewModelOffline.addStudent("asd","1","asd", null)
         studentViewModelOffline.updateStudent("Asd","1","asd", null, "")
         assertThat(studentViewModelOffline.repository.getAllLocallyUpdated()).isNotEmpty()
-        studentViewModelOffline.syncData{}
+        studentViewModelOffline.syncData()
         assertThat(studentViewModelOffline.repository.getAllLocallyUpdated()).isEmpty()
     }
 
@@ -148,7 +150,7 @@ class StudentViewModelTest{
         studentViewModelOffline.addStudent("asd","1","asd", null)
         studentViewModelOffline.deleteStudent(LocalStudent("Asd",1,"asd", null, _id = ""))
         assertThat(studentViewModelOffline.repository.getAllLocallyDelete()).isNotEmpty()
-        studentViewModelOffline.syncData{}
+        studentViewModelOffline.syncData()
         assertThat(studentViewModelOffline.repository.getAllLocallyDelete()).isEmpty()
     }
 
@@ -161,7 +163,7 @@ class StudentViewModelTest{
         //user is offline and deletes a student
         val deletionTarget = remoteStudents!![1]
         studentViewModelOnline.repository.addLocallyDeletedStudent(LocallyDeletedStudent(deletionTarget.studentName, deletionTarget.studentYear, deletionTarget.studentSubject, deletionTarget.studentTutorId,deletionTarget.studentPic,deletionTarget._id?:""))
-        studentViewModelOnline.syncData{}
+        studentViewModelOnline.syncData()
         println("list of remote students after ${studentViewModelOnline.repository.getAllStudentsFromServer().data?.studentsList}")
         // the deleted student shouldn't be in the remoteStudentsList
         assertThat(studentViewModelOnline.repository.getAllStudentsFromServer().data?.studentsList).doesNotContain(deletionTarget)
@@ -174,7 +176,7 @@ class StudentViewModelTest{
         println("list of remote students before $remoteStudentsBefore")
         assertThat(remoteStudentsBefore).isEmpty()
         //user gets online and refresh
-        studentViewModelOnline.syncData{}
+        studentViewModelOnline.syncData()
         val remoteStudentsAfter = studentViewModelOnline.repository.getAllStudentsFromServer().data?.studentsList
         println("list of remote students after $remoteStudentsAfter")
         assertThat(remoteStudentsAfter).contains(remoteStudentsAfter?.get(0))
@@ -187,7 +189,7 @@ class StudentViewModelTest{
         println("list of remote students before $remoteStudentsBefore")
         assertThat(remoteStudentsBefore).isNotEmpty()
         studentViewModelOnline.repository.addLocallyUpdatedStudent(LocallyUpdatedStudent("someotherTests", 123, "nothing", _id = remoteStudentsBefore!![0]._id ?:""))
-        studentViewModelOnline.syncData{}
+        studentViewModelOnline.syncData()
         val remoteStudentsAfter = studentViewModelOnline.repository.getAllStudentsFromServer().data?.studentsList
         println("list of remote students after $remoteStudentsAfter")
         assertThat(remoteStudentsAfter).contains(remoteStudentsAfter?.get(0))
