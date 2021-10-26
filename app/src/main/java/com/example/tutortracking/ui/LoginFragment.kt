@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.tutortracking.R
 import com.example.tutortracking.databinding.FragmentLoginBinding
+import com.example.tutortracking.util.EspressoIdlingResource
 import com.example.tutortracking.util.Result
 import com.example.tutortracking.viewmodels.TutorViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -22,7 +23,7 @@ import kotlinx.coroutines.launch
 class LoginFragment : Fragment() {
     private var _binding: FragmentLoginBinding?=null
     private val binding get() = _binding!!
-    private val viewModel : TutorViewModel by activityViewModels()
+    val viewModel : TutorViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,14 +35,12 @@ class LoginFragment : Fragment() {
 
         subscribeToTutorLoginEvents()
 
-        (activity as MainActivity).hasSessionStarted = true
+        try { (activity as MainActivity).hasSessionStarted = true } catch (e: Exception) { }
 
         binding.haveAccountTv.setOnClickListener {
             findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToRegisterFragment())
         }
-
         binding.loginLoginChip.setOnClickListener { sendUserInput() }
-
         return view
     }
 

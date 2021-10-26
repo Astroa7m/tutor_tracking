@@ -13,9 +13,11 @@ import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.tutortracking.R
+import com.example.tutortracking.data.remotedata.models.Tutor
 import com.example.tutortracking.databinding.FragmentProfileBinding
 import com.example.tutortracking.util.*
 import com.example.tutortracking.viewmodels.TutorViewModel
@@ -23,21 +25,21 @@ import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import java.lang.Exception
 
 
 @AndroidEntryPoint
 class ProfileFragment : Fragment() {
     private var _binding: FragmentProfileBinding? = null
-    private val binding get() = _binding!!
-    private val viewModel: TutorViewModel by activityViewModels()
+    val binding get() = _binding!!
+    lateinit var viewModel: TutorViewModel
     private var hasBeenUpdated = false
     private lateinit var launcher: ActivityResultLauncher<Intent>
     private var imageUri: Uri? = null
     private lateinit var done : MenuItem
     private lateinit var edit : MenuItem
-    private var tutorModules = mutableListOf<String>()
+    var tutorModules = mutableListOf<String>()
     private var hasChipsBeenSet = false
-
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -52,11 +54,13 @@ class ProfileFragment : Fragment() {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         val view = binding.root
 
+        viewModel = ViewModelProvider(requireActivity()).get(TutorViewModel::class.java)
+
         setHasOptionsMenu(true)
         subscribeToTutorLogoutEvents()
         subscribeToTutorUpdateEvents()
         setCurrentTutorInfo()
-        (activity as MainActivity).hasSessionStarted = false
+        try{ (activity as MainActivity).hasSessionStarted = false }catch (e: Exception){ }
 
         binding.profileAddChipsButton.setOnClickListener {
             if(binding.profileModulesEt.text.toString().isNotEmpty())
