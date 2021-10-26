@@ -11,7 +11,7 @@ import org.hamcrest.TypeSafeMatcher
 
 class DrawableMatcher (private val expectedId: Int) : TypeSafeMatcher<View?>(View::class.java) {
     private var resourceName: String? = null
-    private fun getBitmap(drawable: Drawable): Bitmap {
+    private fun getBitmap(drawable: Drawable): Bitmap? {
         val bitmap = Bitmap.createBitmap(
             drawable.intrinsicWidth,
             drawable.intrinsicHeight,
@@ -55,8 +55,11 @@ class DrawableMatcher (private val expectedId: Int) : TypeSafeMatcher<View?>(Vie
         val resources = target.getContext().resources
         val expectedDrawable = resources.getDrawable(expectedId, null)
         resourceName = resources.getResourceEntryName(expectedId)
-        val bitmap = getBitmap(target.drawable)
-        val otherBitmap = getBitmap(expectedDrawable)
-        return bitmap.sameAs(otherBitmap)
+        val bitmap : Bitmap? = getBitmap(target.drawable)
+        bitmap?.let {
+            val otherBitmap = getBitmap(expectedDrawable)
+            return bitmap.sameAs(otherBitmap)
+        }
+        return false
     }
 }

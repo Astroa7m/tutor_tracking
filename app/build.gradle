@@ -143,4 +143,7 @@ dependencies {
 
     androidTestImplementation "org.hamcrest:hamcrest:2.2"
 
+    //tests intents
+    androidTestImplementation 'androidx.test.espresso:espresso-intents:3.4.0'
+
 }

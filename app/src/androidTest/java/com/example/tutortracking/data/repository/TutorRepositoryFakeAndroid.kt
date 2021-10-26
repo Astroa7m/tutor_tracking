@@ -32,8 +32,8 @@ class TutorRepositoryFakeAndroid(internetConnection: Boolean = true, tutorToken:
         else{
             val registeredTutor = Tutor(tutor.email!!, tutor.password.hashCode().toString(), tutor.name!!, tutor.modules!!, tutor.profilePic, tutor._id ?: "id")
             token = "justToken"
-            if(tutorTable.isEmpty()) tutorTable.add(registeredTutor)
-            val result = UserResponse(true, registeredTutor, token)
+            tutorTable.add(registeredTutor)
+            val result = UserResponse(true, registeredTutor, token, "success", emptyList())
             Result.Success(result)
         }
     }

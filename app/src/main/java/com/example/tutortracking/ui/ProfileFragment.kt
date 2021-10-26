@@ -31,7 +31,7 @@ import java.lang.Exception
 @AndroidEntryPoint
 class ProfileFragment : Fragment() {
     private var _binding: FragmentProfileBinding? = null
-    val binding get() = _binding!!
+    private val binding get() = _binding!!
     lateinit var viewModel: TutorViewModel
     private var hasBeenUpdated = false
     private lateinit var launcher: ActivityResultLauncher<Intent>

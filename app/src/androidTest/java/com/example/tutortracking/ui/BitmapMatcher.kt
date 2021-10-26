@@ -1,8 +1,5 @@
 package com.example.tutortracking.ui
 
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.ImageView
 import androidx.core.graphics.drawable.toBitmap
@@ -24,8 +21,8 @@ class ImageBitmapMatcher (imageByteArray: ByteArray) : TypeSafeMatcher<View?>(Vi
         if (target !is ImageView) {
             return false
         }
-        val expectedBitmap = target.drawable.toBitmap()
-        return bitmap!!.sameAs(expectedBitmap)
+        val expectedBitmap = target.drawable?.toBitmap()
+        return bitmap?.sameAs(expectedBitmap) ?: true
     }
 
     companion object{

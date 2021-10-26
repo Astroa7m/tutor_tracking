@@ -14,6 +14,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.tutortracking.R
@@ -24,13 +25,15 @@ import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import java.lang.Exception
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class RegisterFragment : Fragment() {
+class RegisterFragment @Inject constructor(val tutorViewModel: TutorViewModel?): Fragment() {
     private var _binding: FragmentRegisterBinding?=null
     private val binding get() = _binding!!
-    private val viewModel : TutorViewModel by activityViewModels()
+    lateinit var viewModel : TutorViewModel
     private lateinit var launcher: ActivityResultLauncher<Intent>
     private var imageUri: Uri? = null
     private var tutorModules = mutableListOf<String>()
@@ -48,9 +51,11 @@ class RegisterFragment : Fragment() {
         _binding = FragmentRegisterBinding.inflate(inflater, container, false)
         val view = binding.root
 
+        viewModel = tutorViewModel ?: ViewModelProvider(requireActivity()).get(TutorViewModel::class.java)
+
         subscribeToTutorRegisterEvents()
 
-        (activity as MainActivity).hasSessionStarted = true
+        try{(activity as MainActivity).hasSessionStarted = true}catch (e: Exception){}
 
         binding.registerRegisterButton.setOnClickListener{
             sendUserInput()

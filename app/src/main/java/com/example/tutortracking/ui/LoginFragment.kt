@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.tutortracking.R
@@ -18,12 +19,13 @@ import com.example.tutortracking.viewmodels.TutorViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
-class LoginFragment : Fragment() {
+class LoginFragment @Inject constructor(val tutorViewModel: TutorViewModel?) : Fragment() {
     private var _binding: FragmentLoginBinding?=null
     private val binding get() = _binding!!
-    val viewModel : TutorViewModel by activityViewModels()
+    lateinit var viewModel : TutorViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,6 +34,8 @@ class LoginFragment : Fragment() {
     ): View {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
         val view = binding.root
+
+        viewModel = tutorViewModel ?: ViewModelProvider(requireActivity()).get(TutorViewModel::class.java)
 
         subscribeToTutorLoginEvents()
 

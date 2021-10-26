@@ -193,8 +193,8 @@ class StudentsListFragment @Inject constructor(
             val itemView = viewHolder.itemView
             val iconMargin = (itemView.height-deleteIcon.intrinsicHeight) / 2
             if(dX<0){
-                colorDrawable.setBounds(itemView.left-dX.toInt(), itemView.top, itemView.right, itemView.bottom)
-                deleteIcon.setBounds(itemView.right-iconMargin-deleteIcon.intrinsicWidth, itemView.top+iconMargin, itemView.right-iconMargin-(dX.toInt()), itemView.bottom-iconMargin)
+                colorDrawable.setBounds(itemView.left-dX.toInt(), itemView.top, itemView.right-dX.toInt(), itemView.bottom)
+                deleteIcon.setBounds(((itemView.width/1.5).toInt())-iconMargin-(deleteIcon.intrinsicWidth)-(dX.toInt()/2), itemView.top+iconMargin, ((itemView.width/1.5).toInt())-iconMargin-(dX.toInt()), itemView.bottom-iconMargin)
             }else{
                 colorDrawable.setBounds(0,0,0,0)
                 deleteIcon.setBounds(0,0,0,0)
