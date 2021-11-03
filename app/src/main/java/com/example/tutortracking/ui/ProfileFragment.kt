@@ -189,15 +189,18 @@ class ProfileFragment : Fragment() {
         when(item.itemId){
             R.id.logout-> viewModel.logout()
             R.id.edit -> {
+                try{
                 updateProfile()
                 edit.isVisible = !hasBeenUpdated
                 done.isVisible = hasBeenUpdated
+                }catch(e:Exception){}
             }
             R.id.done->{
-                updateProfile()
-                if(userVisibleHint)
+                try {
+                    updateProfile()
                     edit.isVisible = !hasBeenUpdated
-                done.isVisible = hasBeenUpdated
+                    done.isVisible = hasBeenUpdated
+                }catch(e:Exception){}
             }
 
         }

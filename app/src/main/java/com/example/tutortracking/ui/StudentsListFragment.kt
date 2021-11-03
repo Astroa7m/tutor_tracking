@@ -15,12 +15,15 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavController
+import androidx.navigation.NavDirections
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tutortracking.R
 import com.example.tutortracking.adapters.StudentsAdapter
+import com.example.tutortracking.data.localdata.models.LocalStudent
 import com.example.tutortracking.databinding.FragmentStudentsListBinding
 import com.example.tutortracking.util.EspressoIdlingResource
 import com.example.tutortracking.util.Result
@@ -83,8 +86,7 @@ class StudentsListFragment @Inject constructor(
         }
 
         adapter.setOnClickListener {
-            if(findNavController().currentDestination?.id==R.id.studentsListFragment)
-                findNavController().navigate(StudentsListFragmentDirections.actionStudentsListFragmentToAddStudentBottomSheetFragment(it))
+                navigateSafe(it)
         }
 
         return view
@@ -122,8 +124,8 @@ class StudentsListFragment @Inject constructor(
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.add_student -> {
-                if(findNavController().currentDestination?.id==R.id.studentsListFragment)
-                    findNavController().navigate(StudentsListFragmentDirections.actionStudentsListFragmentToAddStudentBottomSheetFragment())
+                navigateSafe()
+                return true
             }
             R.id.by_name -> sortBy(SortOrder.BY_NAME)
             R.id.by_year -> sortBy(SortOrder.BY_YEAR)
@@ -267,6 +269,16 @@ class StudentsListFragment @Inject constructor(
             query != "" && adapter.currentList.isEmpty() ->  binding.noStudentsText.text = getString(R.string.no_student_from_search)
         }
     }
+
+    private fun navigateSafe(student: LocalStudent?=null){
+        try{
+            if(findNavController().currentDestination?.id==R.id.studentsListFragment)
+                findNavController().navigate(StudentsListFragmentDirections.actionStudentsListFragmentToAddStudentBottomSheetFragment(student))
+        }catch (e: Exception){
+            e.printStackTrace()
+        }
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
