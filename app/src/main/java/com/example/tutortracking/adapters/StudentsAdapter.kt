@@ -3,6 +3,7 @@ package com.example.tutortracking.adapters
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -19,6 +20,9 @@ class StudentsAdapter(private inline val moveToFirst : ()->Unit) : ListAdapter<L
     class StudentHolder(private val binding: StudentListItemsBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: LocalStudent?, context: Context) {
             binding.apply {
+
+                daddy.animation = AnimationUtils.loadAnimation(context, R.anim.item_animation)
+
                 if(item?.studentPic!=null)
                     listItemsImage.setImageBitmap(decode(getImageString(item.studentPic)))
                 else
