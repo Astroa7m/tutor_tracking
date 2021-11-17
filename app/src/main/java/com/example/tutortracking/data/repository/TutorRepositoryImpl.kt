@@ -25,10 +25,7 @@ class TutorRepositoryImpl @Inject constructor(
             Result.Error(message = "No Internet Connection")
         } else {
             try {
-                val result: UserResponse
-                withContext(Dispatchers.IO) {
-                    result = tutorApi.registerTutor(tutor)
-                }
+                val result = tutorApi.registerTutor(tutor)
                 if (result.success) {
                     sessionManager.updateSession(result.token!!, result.tutorInfo!!._id)
                     studentDao.upsertTutor(result.tutorInfo)

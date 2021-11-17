@@ -34,6 +34,7 @@ import com.example.tutortracking.viewmodels.TutorViewModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -102,9 +103,11 @@ class StudentsListFragment @Inject constructor(
     private fun syncData() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             binding.swipeRefreshLayout.isRefreshing = true
-            studentsViewModel.syncData {
-                binding.swipeRefreshLayout.isRefreshing = false
-            }
+            async {
+                studentsViewModel.syncData {
+                    binding.swipeRefreshLayout.isRefreshing = false
+                }
+            }.await()
         }
     }
 

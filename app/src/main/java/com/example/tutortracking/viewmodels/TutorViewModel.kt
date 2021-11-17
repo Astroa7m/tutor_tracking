@@ -15,6 +15,7 @@ import com.example.tutortracking.util.Result
 import com.example.tutortracking.util.areFieldsEmpty
 import com.example.tutortracking.util.capitalize
 import com.example.tutortracking.util.doNamesOperations
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.*
 import java.util.*
 
@@ -54,8 +55,8 @@ class TutorViewModel @Inject constructor(@PublishedApi internal val repository: 
             name.doNamesOperations(),
             modules,
             profilePic)
-        val result = repository.register(tutor)
-        _tutorRegisterState.emit(result)
+        val result = async { repository.register(tutor) }
+        _tutorRegisterState.emit(result.await())
     }
 
     fun login(
