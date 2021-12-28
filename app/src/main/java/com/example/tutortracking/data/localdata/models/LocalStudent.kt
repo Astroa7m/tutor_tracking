@@ -1,10 +1,8 @@
 package com.example.tutortracking.data.localdata.models
 
-import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.io.Serializable
-import java.util.*
 
 @Entity(tableName = "studentTable")
 data class LocalStudent(

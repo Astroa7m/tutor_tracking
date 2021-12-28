@@ -1,10 +1,7 @@
 package com.example.tutortracking.data.repository
 
 import com.example.tutortracking.data.common.models.UserResponse
-import com.example.tutortracking.data.localdata.models.LocalStudent
-import com.example.tutortracking.data.localdata.models.LocallyAddedStudent
-import com.example.tutortracking.data.localdata.models.LocallyDeletedStudent
-import com.example.tutortracking.data.localdata.models.LocallyUpdatedStudent
+import com.example.tutortracking.data.localdata.models.*
 import com.example.tutortracking.data.remotedata.models.*
 import com.example.tutortracking.util.*
 import kotlinx.coroutines.flow.Flow
@@ -143,8 +140,8 @@ class TutorRepositoryFakeAndroid(internetConnection: Boolean = true, tutorToken:
         return if(token.isNotEmpty()) token else null
     }
 
-    override fun getCurrentUser(): Flow<List<Tutor>> {
-        return flowOf(tutorTable)
+    override suspend fun getCurrentUser(): Tutor {
+        TODO("Not yet implemented")
     }
 
     override suspend fun addLocallyUpdatedStudent(student: LocallyUpdatedStudent) {
@@ -213,6 +210,26 @@ class TutorRepositoryFakeAndroid(internetConnection: Boolean = true, tutorToken:
             2 -> Pair(themeInt, "DARK")
             else -> Pair(0, "DEFAULT")
         }
+    }
+
+    override suspend fun getAllMessages(): List<Message> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun openSession(): Result<Unit> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun sendMessage(message: String) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun observeMessage(): Flow<Message> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun disconnect() {
+        TODO("Not yet implemented")
     }
 
     override suspend fun sync() {

@@ -6,5 +6,7 @@
     <color name="choose_image_button_color">@color/my_greish</color>
     <color name="buttonTextColor">@color/white</color>
     <color name="fab_button_color_background">#1D1F20</color>
+    <color name="incoming_bubble_chat_bg">#1C282E</color>
+    <color name="outgoing_bubble_chat_bg">#3C464C</color>
 
 </resources>

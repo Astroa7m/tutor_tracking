@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.example.tutortracking.data.localdata.StudentDao
 import com.example.tutortracking.data.localdata.StudentDatabase
+import com.example.tutortracking.data.remotedata.MessageService
 import com.example.tutortracking.data.remotedata.TutorApi
 import com.example.tutortracking.data.repository.TutorRepository
 import com.example.tutortracking.data.repository.TutorRepositoryImpl
@@ -14,12 +15,21 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import io.ktor.client.*
+import io.ktor.client.engine.cio.*
+import io.ktor.client.features.json.*
+import io.ktor.client.features.json.serializer.*
+import io.ktor.client.features.logging.*
+import io.ktor.client.features.websocket.*
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
+
+
+
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -68,10 +78,30 @@ object AppModule {
     fun provideRepository(
         studentDao: StudentDao,
         tutorApi: TutorApi,
-        sessionManager: SessionManager
+        sessionManager: SessionManager,
+        messageService: MessageService
     ) : TutorRepository = TutorRepositoryImpl(
         studentDao,
         tutorApi,
-        sessionManager)
+        sessionManager,
+        messageService)
+
+    @Singleton
+    @Provides
+    fun provideHttpClient(): HttpClient{
+        return HttpClient(CIO){
+            install(Logging)
+            install(WebSockets)
+            install(JsonFeature){
+                serializer = KotlinxSerializer()
+            }
+        }
+    }
+
+    @Singleton
+    @Provides
+    fun provideMessageService(
+        client: HttpClient
+    ) = MessageService(client)
 
 }

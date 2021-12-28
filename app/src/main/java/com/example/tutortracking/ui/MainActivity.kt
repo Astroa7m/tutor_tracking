@@ -1,5 +1,6 @@
 package com.example.tutortracking.ui
 
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatDelegate
@@ -14,14 +15,16 @@ import com.example.tutortracking.R
 import com.example.tutortracking.databinding.ActivityMainBinding
 import com.example.tutortracking.util.SessionManager
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.properties.Delegates
 
+@ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    var hasSessionStarted = false
+    var hasSessionStarted = true
     @Inject
     lateinit var sessionManager: SessionManager
     @Inject
@@ -35,8 +38,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         lifecycleScope.launchWhenStarted { AppCompatDelegate.setDefaultNightMode(sessionManager.getThemeMode()) }
-
-        hasSessionStarted = true
 
         //configuring the appbar to hide the back button of some fragments
         val appBarConfig = AppBarConfiguration
@@ -56,6 +57,7 @@ class MainActivity : AppCompatActivity() {
         val navController = navHostFragment.navController
 
         binding.bottomNavigationView.setupWithNavController(navController)
+        binding.bottomNavigationView.setBackgroundColor(Color.TRANSPARENT)
 
         // hiding the bottom nav controller in some fragments
         navController.addOnDestinationChangedListener { _, destination, _ ->

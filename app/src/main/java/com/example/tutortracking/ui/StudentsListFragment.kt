@@ -13,11 +13,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavController
-import androidx.navigation.NavDirections
-import androidx.navigation.findNavController
+import androidx.lifecycle.*
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -25,7 +21,6 @@ import com.example.tutortracking.R
 import com.example.tutortracking.adapters.StudentsAdapter
 import com.example.tutortracking.data.localdata.models.LocalStudent
 import com.example.tutortracking.databinding.FragmentStudentsListBinding
-import com.example.tutortracking.util.EspressoIdlingResource
 import com.example.tutortracking.util.Result
 import com.example.tutortracking.util.SimpleGesture
 import com.example.tutortracking.util.SortOrder
@@ -33,17 +28,15 @@ import com.example.tutortracking.viewmodels.StudentViewModel
 import com.example.tutortracking.viewmodels.TutorViewModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.async
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class StudentsListFragment @Inject constructor(
     private val studentViewModel: StudentViewModel?
-) : Fragment(R.layout.fragment_students_list), SearchView.OnQueryTextListener {
+) : Fragment(), SearchView.OnQueryTextListener {
     private var _binding: FragmentStudentsListBinding? = null
     private val binding
     get() = _binding!!
@@ -52,11 +45,6 @@ class StudentsListFragment @Inject constructor(
     private val colorDrawable = ColorDrawable(Color.parseColor("#BD4545"))
     private lateinit var deleteIcon : Drawable
     lateinit var adapter: StudentsAdapter
-
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        _binding = FragmentStudentsListBinding.bind(view)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -94,20 +82,20 @@ class StudentsListFragment @Inject constructor(
     }
 
     private fun validateUser() = viewLifecycleOwner.lifecycleScope.launch {
-        tutorViewModel.shouldNavigateToRegister.collect{ shouldNavigate->
-            if(shouldNavigate)
-                navigateToLoginScreen()
+        repeatOnLifecycle(Lifecycle.State.STARTED) {
+            tutorViewModel.shouldNavigateToRegister.collect { shouldNavigate ->
+                if (shouldNavigate)
+                    navigateToLoginScreen()
+            }
         }
     }
 
     private fun syncData() {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+        viewLifecycleOwner.lifecycleScope.launch {
             binding.swipeRefreshLayout.isRefreshing = true
-            async {
-                studentsViewModel.syncData {
-                    binding.swipeRefreshLayout.isRefreshing = false
-                }
-            }.await()
+            studentsViewModel.syncData {
+                binding.swipeRefreshLayout.isRefreshing = false
+            }
         }
     }
 
@@ -154,12 +142,13 @@ class StudentsListFragment @Inject constructor(
        binding.mainRecyclerView.smoothScrollToPosition(0)
     }
 
-    @ExperimentalCoroutinesApi
     private fun setList() = viewLifecycleOwner.lifecycleScope.launch {
-        studentsViewModel.studentsList.collect {
-            binding.noStudentsText.isVisible = it.isEmpty()
-            adapter.submitList(it){
-                moveToFirst()
+        repeatOnLifecycle(Lifecycle.State.STARTED){
+            studentsViewModel.studentsList.collect {
+                binding.noStudentsText.isVisible = it.isEmpty()
+                adapter.submitList(it){
+                    moveToFirst()
+                }
             }
         }
     }
@@ -168,7 +157,7 @@ class StudentsListFragment @Inject constructor(
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
             when(direction){
                 ItemTouchHelper.LEFT->{
-                    val deletionTarget = adapter.currentList[viewHolder.bindingAdapterPosition]
+                    val deletionTarget = adapter.currentList[viewHolder.adapterPosition]
                     studentsViewModel.deleteStudent(deletionTarget)
                     Snackbar.make(
                         binding.root,
@@ -211,16 +200,17 @@ class StudentsListFragment @Inject constructor(
     }
 
     private fun subscribeToDeleteEvents() = viewLifecycleOwner.lifecycleScope.launch {
-        studentsViewModel.deleteStudentState.collect { response->
-            when(response){
-                is Result.Loading-> showProgressBar()
-                is Result.Error ->{
-                    hideProgressBar()
-                    Toast.makeText(requireContext(), response.message.toString(), Toast.LENGTH_LONG).show()
-                }
-                is Result.Success->{
-                    hideProgressBar()
-                    //Toast.makeText(requireContext(), response.data!!.message.toString(), Toast.LENGTH_LONG).show()
+        repeatOnLifecycle(Lifecycle.State.STARTED){
+            studentsViewModel.deleteStudentState.collect { response->
+                when(response){
+                    is Result.Loading-> showProgressBar()
+                    is Result.Error ->{
+                        hideProgressBar()
+                        Toast.makeText(requireContext(), response.message.toString(), Toast.LENGTH_LONG).show()
+                    }
+                    is Result.Success->{
+                        hideProgressBar()
+                    }
                 }
             }
         }
@@ -255,7 +245,6 @@ class StudentsListFragment @Inject constructor(
         return true
     }
 
-
     override fun onQueryTextChange(query: String?): Boolean {
         query?.let {
             viewLifecycleOwner.lifecycleScope.launch {
@@ -281,7 +270,6 @@ class StudentsListFragment @Inject constructor(
             e.printStackTrace()
         }
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()

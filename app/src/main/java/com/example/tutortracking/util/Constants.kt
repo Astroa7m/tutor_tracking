@@ -6,6 +6,8 @@ object Constants {
     const val REGISTER_TUTOR = "$API_VERSION/users/register"
     const val LOGIN_TUTOR = "$API_VERSION/users/login"
     const val UPDATE_TUTOR = "$API_VERSION/users/update"
+    const val GET_ALL_MESSAGES = "$BASE_URL/$API_VERSION/users/all-messages"
+    const val CHAT = "ws://salty-hollows-72744.herokuapp.com/$API_VERSION/users/chat"
     const val CREATE_STUDENTS = "$API_VERSION/students/create"
     const val READ_STUDENTS = "$API_VERSION/students/read"
     const val UPDATE_STUDENTS = "$API_VERSION/students/update/{id}"

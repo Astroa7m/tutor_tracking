@@ -16,5 +16,7 @@
     <color name="choose_image_button_color">#b0bec5</color>
     <color name="buttonTextColor">#3E4B52</color>
     <color name="fab_button_color_background">#b0bec5</color>
+    <color name="incoming_bubble_chat_bg">#355260</color>
+    <color name="outgoing_bubble_chat_bg">#58859E</color>
 
 </resources>

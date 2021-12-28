@@ -143,7 +143,7 @@ class TutorRepositoryFake(internetConnection: Boolean = true, tutorToken: String
         return if(token.isNotEmpty()) token else null
     }
 
-    override fun getCurrentUser(): Flow<List<Tutor>> {
+    override suspend fun getCurrentUser(): Flow<List<Tutor>> {
         return flowOf(tutorTable)
     }
 

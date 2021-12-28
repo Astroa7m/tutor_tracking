@@ -5,9 +5,9 @@ import androidx.fragment.app.FragmentFactory
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 
+@ExperimentalCoroutinesApi
 class TutorTrackingFragmentsFactory @Inject constructor() : FragmentFactory() {
 
-    @ExperimentalCoroutinesApi
     override fun instantiate(classLoader: ClassLoader, className: String): Fragment {
         return when (className) {
             StudentsListFragment::class.java.name -> StudentsListFragment(null)

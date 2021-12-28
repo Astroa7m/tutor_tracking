@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tutortracking.R
 import com.example.tutortracking.data.localdata.models.LocalStudent
-import com.example.tutortracking.data.remotedata.models.Student
 import com.example.tutortracking.databinding.StudentListItemsBinding
 import com.example.tutortracking.util.EspressoIdlingResource
 import com.example.tutortracking.util.decode

@@ -10,10 +10,7 @@ import com.example.tutortracking.data.localdata.models.LocallyAddedStudent
 import com.example.tutortracking.data.localdata.models.LocallyDeletedStudent
 import com.example.tutortracking.data.localdata.models.LocallyUpdatedStudent
 import com.example.tutortracking.data.remotedata.models.Student
-import com.example.tutortracking.data.remotedata.models.Tutor
-import com.example.tutortracking.data.remotedata.models.Update
 import java.io.ByteArrayOutputStream
-import java.util.*
 
 fun areFieldsEmpty(
     email: String,

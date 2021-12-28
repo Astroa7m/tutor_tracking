@@ -69,4 +69,9 @@
             app:nullable="true"
             android:defaultValue="@null" />
     </dialog>
+    <fragment
+        android:id="@+id/chatFragment"
+        android:name="com.example.tutortracking.ui.ChatFragment"
+        android:label="Chat"
+        tools:layout="@layout/fragment_chat" />
 </navigation>

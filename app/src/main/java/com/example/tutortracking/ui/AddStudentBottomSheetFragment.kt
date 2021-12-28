@@ -185,7 +185,7 @@ class AddStudentBottomSheetFragment : BottomSheetDialogFragment() {
         binding.profileChooseASubjectTextview.isVisible = true
     }
 
-    private fun subscribeToAddingStudentEvent() = lifecycleScope.launch {
+    private fun subscribeToAddingStudentEvent() = viewLifecycleOwner.lifecycleScope.launch {
         viewModel.addStudentState.collect { response->
             when(response){
                 is Result.Loading-> {

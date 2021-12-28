@@ -13,22 +13,24 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import com.example.tutortracking.R
 import com.example.tutortracking.databinding.FragmentRegisterBinding
-import com.example.tutortracking.util.*
+import com.example.tutortracking.util.Result
+import com.example.tutortracking.util.capitalize
+import com.example.tutortracking.util.getImageBytes
 import com.example.tutortracking.viewmodels.TutorViewModel
 import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import java.lang.Exception
 import javax.inject.Inject
 
-
+@ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class RegisterFragment @Inject constructor(val tutorViewModel: TutorViewModel?): Fragment() {
     private var _binding: FragmentRegisterBinding?=null
@@ -62,8 +64,10 @@ class RegisterFragment @Inject constructor(val tutorViewModel: TutorViewModel?):
         }
 
         binding.registerAddChipsButton.setOnClickListener{
-            if(binding.registerModulesEt.text.toString().isNotEmpty())
+            if(binding.registerModulesEt.text.toString().isNotEmpty()){
                 addChip(binding.registerModulesEt.text.toString())
+                binding.registerModulesEt.setText("")
+            }
         }
 
         binding.registerImageView.setOnClickListener {
@@ -92,17 +96,19 @@ class RegisterFragment @Inject constructor(val tutorViewModel: TutorViewModel?):
     }
 
     private fun subscribeToTutorRegisterEvents() = viewLifecycleOwner.lifecycleScope.launch {
-        viewModel.tutorRegisterState.collect { response->
-            when(response){
-                is Result.Loading-> showProgressBar()
-                is Result.Error ->{
-                    hideProgressBar()
-                    Toast.makeText(requireContext(), response.message, Toast.LENGTH_LONG).show()
-                }
-                is Result.Success->{
-                    hideProgressBar()
-                    Toast.makeText(requireContext(), response.message, Toast.LENGTH_LONG).show()
-                    findNavController().navigate(RegisterFragmentDirections.actionRegisterFragmentToStudentsListFragment())
+        repeatOnLifecycle(Lifecycle.State.STARTED){
+            viewModel.tutorRegisterState.collect { response->
+                when(response){
+                    is Result.Loading-> showProgressBar()
+                    is Result.Error ->{
+                        hideProgressBar()
+                        Toast.makeText(requireContext(), response.message, Toast.LENGTH_LONG).show()
+                    }
+                    is Result.Success->{
+                        hideProgressBar()
+                        Toast.makeText(requireContext(), response.message, Toast.LENGTH_LONG).show()
+                        findNavController().navigate(RegisterFragmentDirections.actionRegisterFragmentToStudentsListFragment())
+                    }
                 }
             }
         }

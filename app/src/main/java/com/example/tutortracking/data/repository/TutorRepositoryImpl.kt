@@ -2,23 +2,20 @@ package com.example.tutortracking.data.repository
 
 import com.example.tutortracking.data.common.models.UserResponse
 import com.example.tutortracking.data.localdata.StudentDao
-import com.example.tutortracking.data.localdata.models.LocalStudent
-import com.example.tutortracking.data.localdata.models.LocallyAddedStudent
-import com.example.tutortracking.data.localdata.models.LocallyDeletedStudent
-import com.example.tutortracking.data.localdata.models.LocallyUpdatedStudent
+import com.example.tutortracking.data.localdata.models.*
+import com.example.tutortracking.data.remotedata.MessageService
 import com.example.tutortracking.data.remotedata.TutorApi
 import com.example.tutortracking.data.remotedata.models.*
 import com.example.tutortracking.util.*
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class TutorRepositoryImpl @Inject constructor(
     private val studentDao: StudentDao,
     private val tutorApi: TutorApi,
-    private val sessionManager: SessionManager
+    private val sessionManager: SessionManager,
+    private val messageService: MessageService
 ) : TutorRepository {
     override suspend fun register(tutor: Register): Result<UserResponse> {
         return if (!hasInternetConnection(sessionManager.context)) {
@@ -80,7 +77,7 @@ class TutorRepositoryImpl @Inject constructor(
 
     override suspend fun addStudent(student: LocalStudent): Result<UserResponse> {
         try{
-            val tutorId = sessionManager.getTutorId()
+            val tutorId = sessionManager.getTutorId()!!
             val tutorToken = sessionManager.getTutorToken()
             student.studentTutorId = tutorId
             studentDao.upsertStudent(student)
@@ -193,7 +190,7 @@ class TutorRepositoryImpl @Inject constructor(
 
     override suspend fun validateUser() = sessionManager.getTutorToken()
 
-    override fun getCurrentUser(): Flow<List<Tutor>> = studentDao.getTutor()
+    override suspend fun getCurrentUser(): Tutor = studentDao.getTutor()
 
     override suspend fun addLocallyUpdatedStudent(student: LocallyUpdatedStudent) {
         studentDao.insertLocallyUpdatedStudent(student)
@@ -271,7 +268,7 @@ class TutorRepositoryImpl @Inject constructor(
                         remoteStudent.studentName,
                         remoteStudent.studentYear,
                         remoteStudent.studentSubject,
-                        remoteStudent.studentTutorId,
+                        remoteStudent.studentsTutorId,
                         remoteStudent.studentPic,
                         isConnected = true,
                         remoteStudent._id.toString()
@@ -292,8 +289,31 @@ class TutorRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getTutorModules() = studentDao.getTutorModules()
+
     override suspend fun updateTheme(themeInt: Int) {
         sessionManager.updateThemeMode(themeInt)
+    }
+
+    override suspend fun getAllMessages(): List<Message>{
+        val token = sessionManager.getTutorToken() ?: return emptyList()
+        return messageService.getAllMessages(token)
+    }
+
+    override suspend fun openSession(): Result<Unit> {
+        val token = sessionManager.getTutorToken() ?: return Result.Error("No token")
+        return messageService.openSession(token)
+    }
+
+    override suspend fun sendMessage(message: String){
+        messageService.sendMessage(message)
+    }
+
+    override suspend fun observeMessage(): Flow<Message> {
+       return messageService.observeMessage()
+    }
+
+    override suspend fun disconnect() {
+        messageService.disconnect()
     }
 
     override suspend fun getAllStudentsAsList() = studentDao.getAllStudentsForAsList()

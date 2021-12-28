@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/incoming_tv_sender"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Astro" />
+
+    <TextView
+        android:id="@+id/incoming_tv_message_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        android:background="@drawable/incoming_chat_bubble"
+        android:fontFamily="@font/convergence"
+        android:maxWidth="250dp"
+        android:paddingStart="16dp"
+        android:paddingTop="4dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="4dp"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/incoming_tv_sender"
+        tools:text="Hey mate, I am glad to hear that you were doing great lately and I hope one day we can meet" />
+
+    <TextView
+        android:id="@+id/incoming_tv_message_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="20:12 am"
+        android:textSize="12sp"
+        app:layout_constraintVertical_bias="1"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/incoming_tv_message_text"
+        app:layout_constraintStart_toEndOf="@+id/incoming_tv_message_text"
+        app:layout_constraintTop_toTopOf="@+id/incoming_tv_message_text" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

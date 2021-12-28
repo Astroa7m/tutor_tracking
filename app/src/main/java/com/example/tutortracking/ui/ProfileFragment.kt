@@ -12,22 +12,22 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.tutortracking.R
-import com.example.tutortracking.data.remotedata.models.Tutor
 import com.example.tutortracking.databinding.FragmentProfileBinding
 import com.example.tutortracking.util.*
 import com.example.tutortracking.viewmodels.TutorViewModel
 import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import java.lang.Exception
 
-
+@ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class ProfileFragment : Fragment() {
     private var _binding: FragmentProfileBinding? = null
@@ -137,19 +137,19 @@ class ProfileFragment : Fragment() {
     }
 
     private fun setCurrentTutorInfo() = viewLifecycleOwner.lifecycleScope.launch{
-        viewModel.currentTutor.collect { currentTutor->
-            if(currentTutor.isNotEmpty()) {
+            val currentTutor = viewModel.currentTutor
+            if(currentTutor!=null) {
                 binding.profileImageView.apply {
                     when{
-                        currentTutor[0].profilePic != null-> setImageBitmap(decode(getImageString(currentTutor[0].profilePic)))
+                        currentTutor.profilePic != null-> setImageBitmap(decode(getImageString(currentTutor.profilePic)))
                         imageUri!=null -> setImageURI(imageUri)
                         else -> setImageResource(R.drawable.ic_user)
                     }
                 }
-                binding.profileNameEt.setText(currentTutor[0].name)
-                binding.profileEmailEt.setText(currentTutor[0].email)
+                binding.profileNameEt.setText(currentTutor.name)
+                binding.profileEmailEt.setText(currentTutor.email)
                 binding.profileStudentCount.text = getString(R.string.student_count, viewModel.getStudentsCount())
-                currentTutor[0].modules.forEach { module->
+                currentTutor.modules.forEach { module->
                     tutorModules.add(module.capitalize())
                 }
                 if(!hasChipsBeenSet){
@@ -157,7 +157,6 @@ class ProfileFragment : Fragment() {
                     hasChipsBeenSet = true
                 }
             }
-        }
     }
 
     private fun setChips() {
@@ -208,37 +207,41 @@ class ProfileFragment : Fragment() {
     }
 
     private fun subscribeToTutorLogoutEvents() = viewLifecycleOwner.lifecycleScope.launch {
-        viewModel.tutorLogoutState.collect { response->
-            when(response){
-                is Result.Loading-> showProgressBar()
-                is Result.Error ->{
-                    hideProgressBar()
-                    Toast.makeText(requireContext(), response.message, Toast.LENGTH_LONG).show()
-                }
-                is Result.Success->{
-                    hideProgressBar()
-                    Toast.makeText(requireContext(), response.data.toString(), Toast.LENGTH_LONG).show()
-                    findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToLoginFragment())
-                }
-            }
-        }
+       repeatOnLifecycle(Lifecycle.State.STARTED){
+           viewModel.tutorLogoutState.collect { response->
+               when(response){
+                   is Result.Loading-> showProgressBar()
+                   is Result.Error ->{
+                       hideProgressBar()
+                       Toast.makeText(requireContext(), response.message, Toast.LENGTH_LONG).show()
+                   }
+                   is Result.Success->{
+                       hideProgressBar()
+                       Toast.makeText(requireContext(), response.data.toString(), Toast.LENGTH_LONG).show()
+                       findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToLoginFragment())
+                   }
+               }
+           }
+       }
     }
 
     private fun subscribeToTutorUpdateEvents() = viewLifecycleOwner.lifecycleScope.launch {
-        viewModel.tutorUpdateState.collect { response->
-            when(response){
-                is Result.Loading-> showProgressBar()
-                is Result.Error ->{
-                    hideProgressBar()
-                    Toast.makeText(requireContext(), response.message, Toast.LENGTH_LONG).show()
-                    findNavController().run {
-                        popBackStack()
-                        navigate(R.id.profileFragment)
+        repeatOnLifecycle(Lifecycle.State.STARTED){
+            viewModel.tutorUpdateState.collect { response->
+                when(response){
+                    is Result.Loading-> showProgressBar()
+                    is Result.Error ->{
+                        hideProgressBar()
+                        Toast.makeText(requireContext(), response.message, Toast.LENGTH_LONG).show()
+                        findNavController().run {
+                            popBackStack()
+                            navigate(R.id.profileFragment)
+                        }
                     }
-                }
-                is Result.Success->{
-                    hideProgressBar()
-                    Toast.makeText(requireContext(),"Successfully updated", Toast.LENGTH_LONG).show()
+                    is Result.Success->{
+                        hideProgressBar()
+                        Toast.makeText(requireContext(),"Successfully updated", Toast.LENGTH_LONG).show()
+                    }
                 }
             }
         }

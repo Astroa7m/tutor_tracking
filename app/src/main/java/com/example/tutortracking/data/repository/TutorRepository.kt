@@ -1,10 +1,7 @@
 package com.example.tutortracking.data.repository
 
 import com.example.tutortracking.data.common.models.UserResponse
-import com.example.tutortracking.data.localdata.models.LocalStudent
-import com.example.tutortracking.data.localdata.models.LocallyAddedStudent
-import com.example.tutortracking.data.localdata.models.LocallyDeletedStudent
-import com.example.tutortracking.data.localdata.models.LocallyUpdatedStudent
+import com.example.tutortracking.data.localdata.models.*
 import com.example.tutortracking.data.remotedata.models.Login
 import com.example.tutortracking.data.remotedata.models.Register
 import com.example.tutortracking.data.remotedata.models.Tutor
@@ -24,7 +21,7 @@ interface TutorRepository {
     suspend fun logout() : Result<String>
     suspend fun getAllStudentsFromServer() : Result<UserResponse>
     suspend fun validateUser() : String?
-    fun getCurrentUser() : Flow<List<Tutor>>
+    suspend fun getCurrentUser() : Tutor
     suspend fun addLocallyUpdatedStudent(student: LocallyUpdatedStudent)
     suspend fun addLocallyDeletedStudent(student: LocallyDeletedStudent)
     suspend fun addLocallyAddedStudent(student: LocallyAddedStudent)
@@ -40,6 +37,11 @@ interface TutorRepository {
     suspend fun getAllStudentsAsList() : List<LocalStudent>
     suspend fun getTutorModules() : String
     suspend fun updateTheme(themeInt: Int)
+    suspend fun getAllMessages(): List<Message>
+    suspend fun openSession(): Result<Unit>
+    suspend fun sendMessage(message: String)
+    suspend fun observeMessage() : Flow<Message>
+    suspend fun disconnect()
     suspend fun sync()
 
 }
