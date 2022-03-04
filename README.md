@@ -19,3 +19,5 @@ An App that uses Ktor framework plugins like authentication, routing, and websoc
 
 As well as saving students info locally (Android device)
 The app syncs all the offline CREATE, DELETE, & UPDATE operations when the user connects to the internet and refreshes.
+
+[App backend](https://github.com/Astroa7m/TutorAppBackend)
