@@ -24,4 +24,4 @@ The app syncs all the offline CREATE, DELETE, & UPDATE operations when the user 
 
 *App Backend*
 
-*[App backend](https://github.com/Astroa7m/TutorAppBackend)
+* [App backend](https://github.com/Astroa7m/TutorAppBackend)
